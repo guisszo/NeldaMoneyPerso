@@ -21,7 +21,7 @@ class Compte
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     private $numcompte;
 
