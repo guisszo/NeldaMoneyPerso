@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Compte;
 use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
+use PhpParser\Node\Stmt\TryCatch;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use PhpParser\Node\Stmt\TryCatch;
 
 /**
  * @Route("/api")
@@ -55,9 +55,12 @@ class UtilisateurController extends AbstractController
             /************ insertion compte *********************/
 
             $compte = new Compte();
-            $min=1000000000;
-            $max=9999999999;
-            $compte_rand=rand($min,$max);
+            $min=10000;
+            $max=99999;
+            $date       = new \DateTime;
+            $debutNum   = $date->format('ymdHs');
+            $compte_rand=rand($min,$max).'-'.$debutNum;
+
             $compte->setNumcompte($compte_rand);
             $compte->setSolde(0);
             $compte->setPartenaire($part); # Insertion de l'ID du partenaire
@@ -67,7 +70,8 @@ class UtilisateurController extends AbstractController
             /************** insertion Utilisateur *****************/
 
             if ($compte) {
-                #recupération de l'ID du Compte
+                
+                # recupération de l'ID du Compte
 
                 $repository = $this->getDoctrine()->getRepository(Compte::class);
                 $cpt = $repository->find($compte->getId());
