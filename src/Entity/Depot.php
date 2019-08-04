@@ -50,17 +50,17 @@ class Depot
         return $this->id;
     }
 
-    public function getCompte(): ?Compte
-    {
-        return $this->compte;
-    }
+    // public function getCompte(): ?Compte
+    // {
+    //     return $this->compte;
+    // }
 
-    public function setCompte(?Compte $compte): self
-    {
-        $this->compte = $compte;
+    // public function setCompte(?Compte $compte): self
+    // {
+    //     $this->compte = $compte;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getMontant(): ?int
     {
@@ -98,14 +98,42 @@ class Depot
         return $this;
     }
 
-    public function getCaissier(): ?Utilisateur
+   
+
+   
+    public function getCaissier()
     {
         return $this->caissier;
     }
 
-    public function setCaissier(?Utilisateur $caissier): self
+    /**
+     * Set the value of caissier
+     *
+     * @return  self
+     */ 
+    public function setCaissier($caissier)
     {
         $this->caissier = $caissier;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of compte
+     */ 
+    public function getCompte()
+    {
+        return $this->compte;
+    }
+
+    /**
+     * Set the value of compte
+     *
+     * @return  self
+     */ 
+    public function setCompte($compte)
+    {
+        $this->compte = $compte;
 
         return $this;
     }
