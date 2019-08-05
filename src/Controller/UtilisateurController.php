@@ -6,7 +6,6 @@ use App\Entity\Depot;
 use App\Entity\Compte;
 use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
-use PhpParser\Node\Stmt\TryCatch;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +19,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
+use App\Form\PartenaireType;
+use App\Form\UtilisateurControllerFormType;
 
 /**
  * @Route("/api")
@@ -44,13 +45,17 @@ class UtilisateurController extends AbstractController
         ValidatorInterface $validator,
         PartenaireRepository $repository
     ) {
-        $values = json_decode($request->getContent());
+        /*$values = json_decode($request->getContent());*/
+
+        $values= $request->request->all();
+        // var_dump($values);die();
 
         /********************** Insertion Partenaire ***********************/
 
         $partenaire = new Partenaire();
-        $partenaire->setRaisonSociale($values->raison_sociale);
-        $partenaire->setNinea($values->ninea);
+        $form = $this->createForm(PartenaireType::class, $partenaire);
+        $form->submit($values);
+
         $entityManager->persist($partenaire);
         $entityManager->flush();
 
@@ -86,19 +91,20 @@ class UtilisateurController extends AbstractController
                 $cpt = $repository->find($compte->getId());
 
 
-                if (isset($values->username, $values->password) && !empty($values->roles)) {
                     $utilisateur = new Utilisateur();
-                    $utilisateur->setUsername($values->username);
-                    $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $values->password));
-                    $utilisateur->setRoles($values->roles);
+                    $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
+                    $file=$request->files->all()['imageName'];
+                    $form->submit($values);
+                  
+                    $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur,$form->get('password')->getData()));
+                    $utilisateur->setRoles(['ROLE_ADMIN']);
                     $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
                     $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
-                    $utilisateur->setNomComplet($values->nomcomplet);
-                    $utilisateur->setTel($values->tel);
-                    $utilisateur->setAdresse($values->adresse);
-                    $utilisateur->setStatut($values->statut);
-                    $utilisateur->setEmail($values->email);
+                    $utilisateur->setStatut('actif');
+                    $utilisateur->setImageFile($file);
                     $utilisateur->setcreatedAt(new \Datetime);
+                    $utilisateur->setUpdatedAt(new \Datetime);
+
 
 
 
@@ -121,12 +127,7 @@ class UtilisateurController extends AbstractController
                     ];
 
                     return new JsonResponse($data, 201);
-                }
-                $data = [
-                    'retour' => 500,
-                    'mg' => 'Vous devez renseigner les clés username et password'
-                ];
-                return new JsonResponse($data, 500);
+               
             }
         }
     }

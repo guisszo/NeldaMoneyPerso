@@ -29,6 +29,7 @@ public function __construct(UserPasswordEncoderInterface $encoder)
             $utilisateur->setStatut('actif');
             $utilisateur->setEmail('admin@administration.com');
             $utilisateur->setcreatedAt(new \Datetime);
+            $utilisateur->setUpdatedAt(new \Datetime);
 
         $manager->persist($utilisateur);
 
