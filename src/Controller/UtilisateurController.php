@@ -17,13 +17,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 
 /**
  * @Route("/api")
  */
 class UtilisateurController extends AbstractController
 {
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
     /**
      * @Route("/regpart", name="registerpartenaire", methods={"POST"})
      * @IsGranted("ROLE_SUPER_ADMIN")
@@ -43,7 +51,6 @@ class UtilisateurController extends AbstractController
         $partenaire = new Partenaire();
         $partenaire->setRaisonSociale($values->raison_sociale);
         $partenaire->setNinea($values->ninea);
-
         $entityManager->persist($partenaire);
         $entityManager->flush();
 
@@ -79,7 +86,7 @@ class UtilisateurController extends AbstractController
                 $cpt = $repository->find($compte->getId());
 
 
-                if (isset($values->username, $values->password)) {
+                if (isset($values->username, $values->password) && !empty($values->roles)) {
                     $utilisateur = new Utilisateur();
                     $utilisateur->setUsername($values->username);
                     $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $values->password));
@@ -110,14 +117,14 @@ class UtilisateurController extends AbstractController
 
                     $data = [
                         'statut' => 201,
-                        'message' => 'Le partenaire a été créé'
+                        'msge' => 'Le partenaire a été créé'
                     ];
 
                     return new JsonResponse($data, 201);
                 }
                 $data = [
                     'retour' => 500,
-                    'message' => 'Vous devez renseigner les clés username et password'
+                    'mg' => 'Vous devez renseigner les clés username et password'
                 ];
                 return new JsonResponse($data, 500);
             }
@@ -216,16 +223,39 @@ class UtilisateurController extends AbstractController
 
     /************************ Authentification ************************/
 
+    
     /**
-     * @Route("/login_check", name="login", methods={"POST"})
+     *  @Route("/login_check", name="login", methods={"POST"})
+     * @param Request $request
+     * @param JWTEncoderInterface $JWTEncoder
+     * @return JsonResponse
+     * @throws \Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException
      */
-    public function login(Request $request)
+    public function token(Request $request, JWTEncoderInterface $JWTEncoder)
     {
-        $user = $this->getUser();
-        return $this->json([
-            'username' => $user->getUsername(),
-            'roles' => $user->getRoles()
+        $values = json_decode($request->getContent());
+
+        $username= $values->username;
+        $mdp= $values->password;
+
+        $user = $this->getDoctrine()->getRepository(Utilisateur::class)->findOneBy([
+            'username' => $username
         ]);
+
+        if (!$user) {
+            throw $this->createNotFoundException('cette utilisateur n\'existe pas');
+        }
+
+        $isValid = $this->encoder->isPasswordValid($user, $mdp);
+        if (!$isValid) {
+            throw new BadCredentialsException();
+        }
+        $token = $JWTEncoder->encode([
+                'username' => $user->getUsername(),
+                'exp' => time() + 7200 // 1 hour expiration
+            ]);
+
+        return new JsonResponse(['token' => $token]);
     }
 
     // /*************** Depot par le caissier *****************/
