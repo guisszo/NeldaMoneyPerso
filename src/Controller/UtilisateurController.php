@@ -105,9 +105,6 @@ class UtilisateurController extends AbstractController
                     $utilisateur->setcreatedAt(new \Datetime);
                     $utilisateur->setUpdatedAt(new \Datetime);
 
-
-
-
                     $errors = $validator->validate($utilisateur);
 
                     if (count($errors)) {
@@ -146,19 +143,21 @@ class UtilisateurController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
-        $values = json_decode($request->getContent());
+        //$values = json_decode($request->getContent());
+         $values= $request->request->all();
 
-        if (isset($values->username, $values->password)) {
+
             $utilisateur = new Utilisateur();
-            $utilisateur->setUsername($values->username);
-            $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $values->password));
-            $utilisateur->setRoles($values->roles);
-            $utilisateur->setNomComplet($values->nomcomplet);
-            $utilisateur->setTel($values->tel);
-            $utilisateur->setAdresse($values->adresse);
-            $utilisateur->setStatut($values->statut);
-            $utilisateur->setEmail($values->email);
+            $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
+            $file=$request->files->all()['imageName'];
+            $form->submit($values);
+
+            $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
+            $utilisateur->setRoles(['ROLE_ADMIN']);
+            $utilisateur->setStatut('actif');
+            $utilisateur->setImageFile($file);
             $utilisateur->setcreatedAt(new \Datetime);
+            $utilisateur->setUpdatedAt(new \Datetime);
 
 
 
@@ -181,12 +180,7 @@ class UtilisateurController extends AbstractController
             ];
 
             return new JsonResponse($data, 201);
-        }
-        $data = [
-            'status' => 500,
-            'message' => 'Vous devez renseigner les clés username et password'
-        ];
-        return new JsonResponse($data, 500);
+       
     }
 
     /************************** modification d'un user ******************/

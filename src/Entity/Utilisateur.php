@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
@@ -94,6 +95,15 @@ class Utilisateur implements UserInterface
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
      * @Vich\UploadableField(mapping="user_image", fileNameProperty="imageName")
+     * @Assert\File(
+     *     maxSize = "5M",
+     *     mimeTypes = {
+     *         "image/jpeg",
+     *         "image/pjpeg",
+     *         "image/png",
+     *     },
+     * mimeTypesMessage = "Veuillez saisir un bon format d\'image"
+     * )
      * 
      * @var File
      */
