@@ -18,7 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use App\Form\PartenaireType;
 use App\Form\UtilisateurControllerFormType;
 
@@ -45,10 +44,8 @@ class UtilisateurController extends AbstractController
         ValidatorInterface $validator,
         PartenaireRepository $repository
     ) {
-        /*$values = json_decode($request->getContent());*/
 
         $values= $request->request->all();
-        // var_dump($values);die();
 
         /********************** Insertion Partenaire ***********************/
 
@@ -143,7 +140,6 @@ class UtilisateurController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
-        //$values = json_decode($request->getContent());
          $values= $request->request->all();
 
 
@@ -175,8 +171,8 @@ class UtilisateurController extends AbstractController
 
 
             $data = [
-                'status' => 201,
-                'message' => 'L\'utilisateur a été créé'
+                'stts' => 201,
+                'me' => 'L\'utilisateur a été créé'
             ];
 
             return new JsonResponse($data, 201);
@@ -210,8 +206,8 @@ class UtilisateurController extends AbstractController
         }
         $entityManager->flush();
         $data = [
-            'status' => 200,
-            'message' => 'Le user a bien été mis à jour'
+            'sta' => 200,
+            'mes' => 'Le user a bien été mis à jour'
         ];
         return new JsonResponse($data);
     }
@@ -247,7 +243,7 @@ class UtilisateurController extends AbstractController
         }
         $token = $JWTEncoder->encode([
                 'username' => $user->getUsername(),
-                'exp' => time() + 7200 // 1 hour expiration
+                'exp' => time() + 7200 // 2 heures d'expiration
             ]);
 
         return new JsonResponse(['token' => $token]);
@@ -268,8 +264,8 @@ class UtilisateurController extends AbstractController
         try {
             if ($values->montant < 75000) {
                 $exception = [
-                    'status' => 500,
-                    'message' => 'le montant doit etre supérieur a 75000 FCFA'
+                    'sttus' => 500,
+                    'mesge' => 'le montant doit etre supérieur a 75000 FCFA'
                 ];
                 return new JsonResponse($exception, 500);
             }

@@ -50,18 +50,6 @@ class Depot
         return $this->id;
     }
 
-    // public function getCompte(): ?Compte
-    // {
-    //     return $this->compte;
-    // }
-
-    // public function setCompte(?Compte $compte): self
-    // {
-    //     $this->compte = $compte;
-
-    //     return $this;
-    // }
-
     public function getMontant(): ?int
     {
         return $this->montant;

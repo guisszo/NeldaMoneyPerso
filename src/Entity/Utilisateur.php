@@ -96,7 +96,7 @@ class Utilisateur implements UserInterface
      * 
      * @Vich\UploadableField(mapping="user_image", fileNameProperty="imageName")
      * @Assert\File(
-     *     maxSize = "5M",
+     *     maxSize = "2M",
      *     mimeTypes = {
      *         "image/jpeg",
      *         "image/pjpeg",
