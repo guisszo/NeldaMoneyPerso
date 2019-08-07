@@ -40,7 +40,10 @@ class Compte
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="compte")
      */
     private $depots;
-
+      /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Utilisateur", mappedBy="compte")
      */
@@ -89,6 +92,17 @@ class Compte
     public function setPartenaire(?Partenaire $partenaire): self
     {
         $this->partenaire = $partenaire;
+
+        return $this;
+    }
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -12,11 +12,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
- * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
+ * @UniqueEntity(fields={"username"}, message="Ce nom d'utilisateur est deja pris")
+ * @UniqueEntity(fields={"tel"}, message="Ce numero de telephone existe deja")
  *  @Vich\Uploadable
  */
 class Utilisateur implements UserInterface
 {
+   
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -37,6 +39,12 @@ class Utilisateur implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Veuillez saisir un mot de passe")
+     * @Assert\Regex(
+     *     pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/",
+     *     match=true,
+     *     message="Votre mot de passe doit contenir au moins 8 caractères, un majuscule et un caractère spéciale"
+     * )
      */
     private $password;
 
@@ -56,7 +64,13 @@ class Utilisateur implements UserInterface
     private $compte;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="tel",type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Veuillez un saisir un numéro de téléphone")
+     * @Assert\Regex(
+     *     pattern="/^(\+[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\-]*$/",
+     *     match=true,
+     *     message="Votre numero ne doit pas contenir de lettre"
+     * )
      */
     private $tel;
 
@@ -269,12 +283,12 @@ class Utilisateur implements UserInterface
         return $this;
     }
 
-    public function getTel(): ?int
+    public function getTel(): ?string
     {
         return $this->tel;
     }
 
-    public function setTel(int $tel): self
+    public function setTel(string $tel): self
     {
         $this->tel = $tel;
 

@@ -7,7 +7,7 @@ return [
     'app_register' => [[], ['_controller' => 'App\\Controller\\RegistrationController::register'], [], [['text', '/register']], [], []],
     'registerpartenaire' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::register'], [], [['text', '/api/regpart']], [], []],
     'registeruser' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::reguser'], [], [['text', '/api/registeruser']], [], []],
-    'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::login'], [], [['text', '/api/login_check']], [], []],
+    'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::token'], [], [['text', '/api/login_check']], [], []],
     'depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::depot'], [], [['text', '/api/depot']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', 'index', 'index', true], ['text', '/api']], [], []],
     'api_doc' => [['_format'], ['_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], [], [['variable', '.', '[^/]++', '_format', true], ['text', '/api/docs']], [], []],

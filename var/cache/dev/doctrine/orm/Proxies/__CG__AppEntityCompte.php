@@ -64,10 +64,10 @@ class Compte extends \App\Entity\Compte implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'numcompte', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'solde', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'utilisateurs'];
+            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'numcompte', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'solde', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'createdAt', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'utilisateurs'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'numcompte', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'solde', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'utilisateurs'];
+        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'numcompte', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'solde', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'createdAt', '' . "\0" . 'App\\Entity\\Compte' . "\0" . 'utilisateurs'];
     }
 
     /**
@@ -252,6 +252,28 @@ class Compte extends \App\Entity\Compte implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPartenaire', [$partenaire]);
 
         return parent::setPartenaire($partenaire);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
+
+        return parent::getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCreatedAt(\DateTimeInterface $createdAt): \App\Entity\Compte
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$createdAt]);
+
+        return parent::setCreatedAt($createdAt);
     }
 
     /**

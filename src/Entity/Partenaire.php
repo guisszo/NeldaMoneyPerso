@@ -2,14 +2,18 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass="App\Repository\PartenaireRepository")
+ * @UniqueEntity(fields={"raisonSociale"}, message="la raison sociale est unique")
  */
 class Partenaire
 {
@@ -21,7 +25,8 @@ class Partenaire
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(name="raisonSociale",type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Veuillez saisir le raison social")
      */
     private $raisonSociale;
 

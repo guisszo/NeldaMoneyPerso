@@ -13,7 +13,7 @@ return [
         '/api/regpart' => [[['_route' => 'registerpartenaire', '_controller' => 'App\\Controller\\UtilisateurController::register'], null, ['POST' => 0], null, false, false, null]],
         '/api/registeruser' => [[['_route' => 'registeruser', '_controller' => 'App\\Controller\\UtilisateurController::reguser'], null, ['POST' => 0], null, false, false, null]],
         '/api/login_check' => [
-            [['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::login'], null, ['POST' => 0], null, false, false, null],
+            [['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::token'], null, ['POST' => 0], null, false, false, null],
             [['_route' => 'api_login_check'], null, null, null, false, false, null],
         ],
         '/api/depot' => [[['_route' => 'depot', '_controller' => 'App\\Controller\\UtilisateurController::depot'], null, ['POST' => 0], null, false, false, null]],

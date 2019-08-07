@@ -6,6 +6,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     $o = [
         clone (($p = &Registry::$prototypes)['Doctrine\\ORM\\Mapping\\Entity'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Entity')),
         clone ($p['Symfony\\Bridge\\Doctrine\\Validator\\Constraints\\UniqueEntity'] ?? Registry::p('Symfony\\Bridge\\Doctrine\\Validator\\Constraints\\UniqueEntity')),
+        clone $p['Symfony\\Bridge\\Doctrine\\Validator\\Constraints\\UniqueEntity'],
         clone ($p['Vich\\UploaderBundle\\Mapping\\Annotation\\Uploadable'] ?? Registry::p('Vich\\UploaderBundle\\Mapping\\Annotation\\Uploadable')),
     ],
     null,
@@ -15,15 +16,22 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 'App\\Repository\\UtilisateurRepository',
             ],
             'message' => [
-                1 => 'There is already an account with this username',
+                1 => 'Ce nom d\'utilisateur est deja pris',
+                'Ce numero de telephone existe deja',
             ],
             'fields' => [
                 1 => [
                     'username',
                 ],
+                [
+                    'tel',
+                ],
             ],
             'groups' => [
                 1 => [
+                    'Default',
+                ],
+                [
                     'Default',
                 ],
             ],
@@ -33,6 +41,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
         $o[0],
         $o[1],
         $o[2],
+        $o[3],
     ],
     []
 );

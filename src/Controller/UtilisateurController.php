@@ -6,8 +6,10 @@ use App\Entity\Depot;
 use App\Entity\Compte;
 use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
+use App\Form\PartenaireType;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Form\UtilisateurControllerFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,9 +19,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use App\Form\PartenaireType;
-use App\Form\UtilisateurControllerFormType;
 
 /**
  * @Route("/api")
@@ -32,191 +33,12 @@ class UtilisateurController extends AbstractController
     {
         $this->encoder = $encoder;
     }
-    /**
-     * @Route("/regpart", name="registerpartenaire", methods={"POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
-    public function register(
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
-        PartenaireRepository $repository
-    ) {
-
-        $values= $request->request->all();
-
-        /********************** Insertion Partenaire ***********************/
-
-        $partenaire = new Partenaire();
-        $form = $this->createForm(PartenaireType::class, $partenaire);
-        $form->submit($values);
-
-        $entityManager->persist($partenaire);
-        $entityManager->flush();
-
-
-        if ($partenaire) {
-            #recupération de l'ID du Partenaire
-
-            $repository = $this->getDoctrine()->getRepository(Partenaire::class);
-            $part = $repository->find($partenaire->getId());
-
-            /************ insertion compte *********************/
-
-            $compte = new Compte();
-            $min = 10000;
-            $max = 99999;
-            $date       = new \DateTime;
-            $debutNum   = $date->format('ydHs');
-            $compte_rand = rand($min, $max) . $debutNum;
-
-            $compte->setNumcompte($compte_rand);
-            $compte->setSolde(0);
-            $compte->setPartenaire($part); # Insertion de l'ID du partenaire
-            $entityManager->persist($compte);
-            $entityManager->flush();
-
-            /************** insertion Utilisateur *****************/
-
-            if ($compte) {
-
-                # recupération de l'ID du Compte
-
-                $repository = $this->getDoctrine()->getRepository(Compte::class);
-                $cpt = $repository->find($compte->getId());
-
-
-                    $utilisateur = new Utilisateur();
-                    $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
-                    $file=$request->files->all()['imageName'];
-                    $form->submit($values);
-                  
-                    $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur,$form->get('password')->getData()));
-                    $utilisateur->setRoles(['ROLE_ADMIN']);
-                    $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
-                    $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
-                    $utilisateur->setStatut('actif');
-                    $utilisateur->setImageFile($file);
-                    $utilisateur->setcreatedAt(new \Datetime);
-                    $utilisateur->setUpdatedAt(new \Datetime);
-
-                    $errors = $validator->validate($utilisateur);
-
-                    if (count($errors)) {
-                        $errors = $serializer->serialize($errors, 'json');
-                        return new Response($errors, 500, [
-                            'Content-Type' => 'application/json'
-                        ]);
-                    }
-                    $entityManager->persist($utilisateur);
-                    $entityManager->flush();
-
-
-
-                    $data = [
-                        'statut' => 201,
-                        'msge' => 'Le partenaire a été créé'
-                    ];
-
-                    return new JsonResponse($data, 201);
-               
-            }
-        }
-    }
-
-
-    /************** Insertion d'un utilisateur simple par super_admin********** */
-
-    /**
-     * @Route("/registeruser", name="registeruser", methods={"POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
-    public function reguser(
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator
-    ) {
-         $values= $request->request->all();
-
-
-            $utilisateur = new Utilisateur();
-            $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
-            $file=$request->files->all()['imageName'];
-            $form->submit($values);
-
-            $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
-            $utilisateur->setRoles(['ROLE_ADMIN']);
-            $utilisateur->setStatut('actif');
-            $utilisateur->setImageFile($file);
-            $utilisateur->setcreatedAt(new \Datetime);
-            $utilisateur->setUpdatedAt(new \Datetime);
-
-
-
-            $errors = $validator->validate($utilisateur);
-
-            if (count($errors)) {
-                $errors = $serializer->serialize($errors, 'json');
-                return new Response($errors, 500, [
-                    'Content-Type' => 'application/json'
-                ]);
-            }
-            $entityManager->persist($utilisateur);
-            $entityManager->flush();
-
-
-
-            $data = [
-                'stts' => 201,
-                'me' => 'L\'utilisateur a été créé'
-            ];
-
-            return new JsonResponse($data, 201);
-       
-    }
-
-    /************************** modification d'un user ******************/
-
-    /*
-     * @Route("/modif_user/{id}" , name="modif_user" , methods={"PUT"})
-     * @IsGranted("ROLE_ADMIN")
-    */
-
-    public function partUserModif(Request $request, SerializerInterface $serializer, Partenaire $part, ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
-        $partUpdate = $entityManager->getRepository(Partenaire::class)->find($part->getId());
-        $data = json_decode($request->getContent());
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = ucfirst($key);
-                $setter = 'set' . $name;
-                $partUpdate->$setter($value);
-            }
-        }
-        $errors = $validator->validate($partUpdate);
-        if (count($errors)) {
-            $errors = $serializer->serialize($errors, 'json');
-            return new Response($errors, 500, [
-                'Content-Type' => 'application/json'
-            ]);
-        }
-        $entityManager->flush();
-        $data = [
-            'sta' => 200,
-            'mes' => 'Le user a bien été mis à jour'
-        ];
-        return new JsonResponse($data);
-    }
-
+   
     /************************ Authentification ************************/
 
     
     /**
-     *  @Route("/login_check", name="login", methods={"POST"})
+     *  @Route("/login_chec", name="login", methods={"POST"})
      * @param Request $request
      * @param JWTEncoderInterface $JWTEncoder
      * @return JsonResponse
@@ -225,21 +47,42 @@ class UtilisateurController extends AbstractController
     public function token(Request $request, JWTEncoderInterface $JWTEncoder)
     {
         $values = json_decode($request->getContent());
-
+        
         $username= $values->username;
         $mdp= $values->password;
 
         $user = $this->getDoctrine()->getRepository(Utilisateur::class)->findOneBy([
             'username' => $username
         ]);
-
+      
+    
         if (!$user) {
-            throw $this->createNotFoundException('cette utilisateur n\'existe pas');
+           
+            $data = [
+                'sta' => 400,
+                'me' => 'cette utilisateur n existe pas'
+            ];
+            return new JsonResponse($data);
         }
+        
 
         $isValid = $this->encoder->isPasswordValid($user, $mdp);
         if (!$isValid) {
-            throw new BadCredentialsException();
+            $data = [
+                'sta' => 400,
+                'mes' => 'Votre mot de pass est incorrect'
+            ];
+            return new JsonResponse($data);
+        }
+        if($user->getStatut()==="bloque" ){
+           
+           
+            $data = [
+                'sta' => 400,
+                'mes' => 'acces refuse, vous etes bloque'
+            ];
+            return new JsonResponse($data);
+        
         }
         $token = $JWTEncoder->encode([
                 'username' => $user->getUsername(),
@@ -315,4 +158,9 @@ class UtilisateurController extends AbstractController
             return new JsonResponse($data);
         }
     }
+
+    /*****************************************************/
+
+    
+     
 }
