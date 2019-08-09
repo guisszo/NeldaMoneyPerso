@@ -45,6 +45,11 @@ class Partenaire
      */
     private $utilisateurs;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $statut;
+
     public function __construct()
     {
         $this->comptes = new ArrayCollection();
@@ -138,6 +143,18 @@ class Partenaire
                 $utilisateur->setPartenaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?string $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

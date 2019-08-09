@@ -74,21 +74,25 @@ class UtilisateurController extends AbstractController
            
             $data = [
                 'sta' => 400,
-                'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car vous etes bloque'
+                'mes' => 'Desole '.$user->getNomcomplet().', vous etes bloque, contacter votre admin'
             ];
             return new JsonResponse($data);
         
         }
-        if($user->getRoles()==["ROLE_USER"] || $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"] 
-        && $user->getPartenaire()->getStatut()=="bloque" ){
-            
-                $data = [
-                    'sta' => 401,
-                    'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car votre partenaire est bloque'
-                ];
-                return new JsonResponse($data);
-            
-        }
+          
+            if($user->getRoles()==["ROLE_USER"] && 
+            $user->getPartenaire()->getStatut()==="bloque" || 
+            $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"]
+            && $user->getPartenaire()->getStatut()==="bloque" ){
+                
+                    $data = [
+                        'sta' => 401,
+                        'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car votre partenaire est bloque'
+                    ];
+                    return new JsonResponse($data);
+                
+            }
+    
         $token = $JWTEncoder->encode([
                 'username' => $user->getUsername(),
                 'exp' => time() + 7200 // 2 heures de validité

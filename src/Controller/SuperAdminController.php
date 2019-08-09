@@ -54,7 +54,7 @@ class SuperAdminController extends AbstractController
         $partenaire = new Partenaire();
         $form = $this->createForm(PartenaireType::class, $partenaire);
         $form->submit($values);
-
+        $partenaire->setStatut('actif');
         $entityManager->persist($partenaire);
         $entityManager->flush();
 
