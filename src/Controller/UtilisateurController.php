@@ -4,12 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Depot;
 use App\Entity\Compte;
-use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
-use App\Form\PartenaireType;
-use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Form\UtilisateurControllerFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +15,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -79,14 +74,24 @@ class UtilisateurController extends AbstractController
            
             $data = [
                 'sta' => 400,
-                'mes' => 'acces refuse, vous etes bloque'
+                'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car vous etes bloque'
             ];
             return new JsonResponse($data);
         
         }
+        if($user->getRoles()==["ROLE_USER"] || $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"] 
+        && $user->getPartenaire()->getStatut()=="bloque" ){
+            
+                $data = [
+                    'sta' => 401,
+                    'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car votre partenaire est bloque'
+                ];
+                return new JsonResponse($data);
+            
+        }
         $token = $JWTEncoder->encode([
                 'username' => $user->getUsername(),
-                'exp' => time() + 7200 // 2 heures d'expiration
+                'exp' => time() + 7200 // 2 heures de validité
             ]);
 
         return new JsonResponse(['token' => $token]);
@@ -121,7 +126,7 @@ class UtilisateurController extends AbstractController
         } catch (ParseException $exception) {
             $exception = [
                 'status' => 500,
-                'message' => 'Vous devez renseigner les tous  champs'
+                'message' => 'Vous devez renseigner tous les champs'
             ];
             return new JsonResponse($exception, 500);
         }
@@ -159,8 +164,7 @@ class UtilisateurController extends AbstractController
         }
     }
 
-    /*****************************************************/
-
-    
+    /****************************************************************************/
+       
      
 }

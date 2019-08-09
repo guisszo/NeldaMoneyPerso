@@ -32,7 +32,7 @@ class Compte
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $partenaire;
 

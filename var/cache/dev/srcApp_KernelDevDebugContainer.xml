@@ -492,6 +492,14 @@
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
+    <service id="App\Repository\ProfilRepository" class="App\Repository\ProfilRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\TarifsRepository" class="App\Repository\TarifsRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="App\Repository\UtilisateurRepository" class="App\Repository\UtilisateurRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -2570,12 +2578,19 @@
       <call method="add">
         <argument type="service" id=".security.request_matcher.D2XdegB"/>
         <argument type="collection">
-          <argument>IS_AUTHENTICATED_ANONYMOUSLY</argument>
+          <argument>IS_AUTHENTICATED_FULLY</argument>
         </argument>
         <argument>null</argument>
       </call>
       <call method="add">
         <argument type="service" id=".security.request_matcher.ZGf43Bs"/>
+        <argument type="collection">
+          <argument>IS_AUTHENTICATED_FULLY</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+      <call method="add">
+        <argument type="service" id=".security.request_matcher.MzmztpR"/>
         <argument type="collection">
           <argument>IS_AUTHENTICATED_FULLY</argument>
         </argument>
@@ -3058,6 +3073,9 @@
     <service id=".security.request_matcher.ZGf43Bs" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
       <argument>^/api/registeruser</argument>
     </service>
+    <service id=".security.request_matcher.MzmztpR" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/regpart</argument>
+    </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand" public="false">
       <tag name="console.command" command="security:encode-password"/>
       <argument type="service" id="security.encoder_factory.generic"/>
@@ -3256,7 +3274,7 @@
       <factory class="Doctrine\ORM\EntityManager" method="create"/>
     </service>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory" public="false">
-      <argument type="service" id=".service_locator.SiKuBxN"/>
+      <argument type="service" id=".service_locator.zOI0Iat"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -4958,6 +4976,10 @@
     <service id=".abstract.instanceof.App\Repository\DepotRepository" class="App\Repository\DepotRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\PartenaireRepository" class="App\Repository\PartenaireRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\PartenaireRepository" class="App\Repository\PartenaireRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ProfilRepository" class="App\Repository\ProfilRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\ProfilRepository" class="App\Repository\ProfilRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\TarifsRepository" class="App\Repository\TarifsRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\TarifsRepository" class="App\Repository\TarifsRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\UtilisateurRepository" class="App\Repository\UtilisateurRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\UtilisateurRepository" class="App\Repository\UtilisateurRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="maker.auto_command.make_auth" class="Symfony\Bundle\MakerBundle\Command\MakerCommand" public="false">
@@ -5284,12 +5306,14 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.SiKuBxN" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.zOI0Iat" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Repository\CompteRepository" type="service" id="App\Repository\CompteRepository"/>
         <argument key="App\Repository\DepotRepository" type="service" id="App\Repository\DepotRepository"/>
         <argument key="App\Repository\PartenaireRepository" type="service" id="App\Repository\PartenaireRepository"/>
+        <argument key="App\Repository\ProfilRepository" type="service" id="App\Repository\ProfilRepository"/>
+        <argument key="App\Repository\TarifsRepository" type="service" id="App\Repository\TarifsRepository"/>
         <argument key="App\Repository\UtilisateurRepository" type="service" id="App\Repository\UtilisateurRepository"/>
       </argument>
     </service>

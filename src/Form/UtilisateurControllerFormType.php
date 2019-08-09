@@ -2,10 +2,12 @@
 
 namespace App\Form;
 
+use App\Entity\Profil;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -23,6 +25,7 @@ class UtilisateurControllerFormType extends AbstractType
             ->add('email',TextType::class)
             ->add('adresse',TextType::class)
             ->add('statut',TextType::class)
+            ->add('profil',EntityType::class,['class' =>Profil::class])
             ->add('imageFile',VichImageType::class)
             
         ;

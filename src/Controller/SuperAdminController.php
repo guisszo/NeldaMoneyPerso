@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Compte;
+use App\Entity\Profil;
 use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
 use App\Form\PartenaireType;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\Blank;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 /**
  * @Route("/api")
  */
@@ -94,7 +97,7 @@ class SuperAdminController extends AbstractController
                     $form->submit($values);
                   
                     $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur,$form->get('password')->getData()));
-                    $utilisateur->setRoles(['ROLE_ADMIN']);
+                    $utilisateur->setRoles(['ROLE_PARTENAIRE']);
                     $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
                     $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
                     $utilisateur->setStatut('actif');
@@ -131,7 +134,6 @@ class SuperAdminController extends AbstractController
 
     /**
      * @Route("/registeruser", name="registeruser", methods={"POST"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function reguser(
         Request $request,
@@ -140,21 +142,94 @@ class SuperAdminController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
+
          $values= $request->request->all();
-
-
+            
             $utilisateur = new Utilisateur();
             $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
             $file=$request->files->all()['imageName'];
             $form->submit($values);
             $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
-            $utilisateur->setRoles(['ROLE_CAISSIER']);
+            
+            $repository = $this->getDoctrine()->getRepository(Profil::class);
+                $profils = $repository->find($values['profil']);
+                $utilisateur->setProfil($profils);
+
+            if($profils->getLibelle()=="admin"){
+
+                if($this->getUser()->getRoles()[0]!="ROLE_SUPER_ADMIN" &&
+                $this->getUser()->getRoles()[0]!= "ROLE_ADMIN"
+                ){
+
+                    $data = [
+                        'statut' => 401,
+                        'msge3' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    ];
+
+                    return new JsonResponse($data, 401);
+                }
+
+                $utilisateur->setRoles(['ROLE_ADMIN']);
+
+            }elseif($profils->getLibelle()=="caissier"){
+               
+                if($this->getUser()->getRoles()[0]!="ROLE_SUPER_ADMIN" &&
+                $this->getUser()->getRoles()[0] !="ROLE_ADMIN"
+                ){
+
+                   $data = [
+                        'statut' => 401,
+                        'msge4' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    ];
+
+                    return new JsonResponse($data, 401);
+                }
+                $utilisateur->setRoles(['ROLE_CAISSIER']);
+
+            }elseif($profils->getLibelle()=="partenaire_admin"){
+
+                if($this->getUser()->getRoles()[0]!="ROLE_PARTENAIRE" &&
+                $this->getUser()->getRoles()[0] !="ROLE_PARTENAIRE_ADMIN"
+                ){
+                    
+                    $data = [
+                        'statut' => 401,
+                        'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    ];
+
+                    return new JsonResponse($data, 401);
+                }
+               $users=$this->getUser()->getPartenaire();
+
+               $utilisateur->setPartenaire($users);
+                $utilisateur->setRoles(['ROLE_PARTENARE_ADMIN']);
+
+
+            }elseif($profils->getLibelle()=="user"){
+
+                if($this->getUser()->getRoles()[0]!="ROLE_PARTENAIRE" &&
+                $this->getUser()->getRoles()[0] !="ROLE_PARTENAIRE_ADMIN"
+                ){
+                    
+                    $data = [
+                        'statut' => 401,
+                        'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    ];
+
+                    return new JsonResponse($data, 401);
+                }
+                $users=$this->getUser()->getPartenaire();
+               
+               $utilisateur->setPartenaire($users);
+                $utilisateur->setRoles(['ROLE_USER']);
+            }
+
+       
             $utilisateur->setStatut('actif');
             $utilisateur->setImageFile($file);
             $utilisateur->setcreatedAt(new \Datetime);
             $utilisateur->setUpdatedAt(new \Datetime);
-
-
+          
 
             $errors = $validator->validate($utilisateur);
 
@@ -164,10 +239,11 @@ class SuperAdminController extends AbstractController
                     'Content-Type' => 'application/json'
                 ]);
             }
+           
             $entityManager->persist($utilisateur);
             $entityManager->flush();
 
-
+            
 
             $data = [
                 'stts' => 201,
@@ -219,7 +295,8 @@ class SuperAdminController extends AbstractController
         ValidatorInterface $validator,
         PartenaireRepository $repository
     ){
-        #recupération de l'ID du Partenaire
+        #################recupération de l'ID du Partenaire####################
+
         $values = json_decode($request->getContent());
         $repository = $this->getDoctrine()->getRepository(Partenaire::class);
     
@@ -235,7 +312,7 @@ class SuperAdminController extends AbstractController
           $compte_rand = rand($min, $max) . $concat;
           $compte->setNumcompte($compte_rand);
           $compte->setSolde(0);
-          $compte->setPartenaire($partenaire); # Insertion de l'ID du 
+          $compte->setPartenaire($partenaire); # Insertion de l'ID du partenaire
           $compte->setCreatedAt(new \DateTime);
           $entityManager->persist($compte);
           $entityManager->flush();

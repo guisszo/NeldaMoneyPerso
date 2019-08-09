@@ -16,9 +16,6 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
             'inversedBy' => [
                 'comptes',
             ],
-            'nullable' => [
-                1 => false,
-            ],
         ],
     ],
     [

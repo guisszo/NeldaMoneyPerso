@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -26,6 +28,7 @@ class Depot
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="Veuillez saisir le montant a deposer")
      */
     private $montant;
 
