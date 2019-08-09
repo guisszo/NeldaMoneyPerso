@@ -14,13 +14,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Constraints\Blank;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -265,14 +262,25 @@ class SuperAdminController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
-    
+        $partStat = $utilisateur->getPartenaire()->getStatut();
         if (!$utilisateur) {
             throw $this->createNotFoundException(
                 'pas d\'utilisateur trouve pour cet id '.$id
             );
         }
-    
-        $utilisateur->setStatut('bloque');
+       
+        $parts=$utilisateur->getPartenaire();
+        if($partStat== "actif"){
+
+        
+       $parts->setStatut('bloque');
+       $utilisateur->setStatut('bloque');
+
+    }else{
+       
+        $parts->setStatut('actif');
+        $utilisateur->setStatut('actif');
+    }
         $entityManager->flush();
     
         $data = [
