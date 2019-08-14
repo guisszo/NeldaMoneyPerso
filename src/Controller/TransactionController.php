@@ -35,46 +35,46 @@ class TransactionController extends AbstractController
     /**
      * @Route("/envoi",name="envoi",methods={"POST"})
      */
-    public function envoi(TarifsRepository $repo,
+    public function envoi(
+        TarifsRepository $repo,
         Request $request,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         ValidatorInterface $validator
-    ){
-        
-        $values = $request->request->all();
-    ###############code qui va générer le code transaction############
+    ) {
 
-            $min = 1000;
-            $max = 9999;
-            $date       = new \DateTime;
-            $dateformat   = $date->format('yd-Hs');
-            $compte_rand = rand($min, $max).'-' . $dateformat;
-    ###################################################################
+        $values = $request->request->all();
+        ###############code qui va générer le code transaction############
+
+        $min = 1000;
+        $max = 9999;
+        $date       = new \DateTime;
+        $dateformat   = $date->format('yH-ds');
+        $compte_rand = rand($min, $max) . '-' . $dateformat;
+        ###################################################################
 
         $transaction = new Transaction();
-        $user =$this->getUser();
-       
+        $user = $this->getUser();
+
         $form = $this->createForm(TransactionType::class, $transaction);
         $form->submit($values);
-       
 
-        
+
+
         $transaction->setUserEnvoi($user);
         $transaction->setCodeTransaction($compte_rand);
         $transaction->setStatut('disponible');
         $transaction->setSentAt(new \DateTime);
-        $valeur=$transaction->getMontant();
-        $value=$repo->findtarif($valeur);
-        //var_dump($valeur);die();
-        $transaction->setCommissionEnv($value[0]->getValeur()*0.1);
-        $transaction->setCommissionEtat($value[0]->getValeur()*0.3);
-        $transaction->setCommissionNeldam($value[0]->getValeur()*0.4);
-        $cpt=$user->getCompte();
-        $modsolde=$user->getCompte()->getSolde() - $transaction->getMontant()+$transaction->getCommissionEnv();
-      $cpt->setSolde($modsolde);
+        $valeur = $transaction->getMontant();
+        $value = $repo->findtarif($valeur);
+        $transaction->setCommissionEnv($value[0]->getValeur() * 0.1);
+        $transaction->setCommissionEtat($value[0]->getValeur() * 0.3);
+        $transaction->setCommissionNeldam($value[0]->getValeur() * 0.4);
+        $cpt = $user->getCompte();
+        $modsolde = $user->getCompte()->getSolde() - $transaction->getMontant() + $transaction->getCommissionEnv();
+        $cpt->setSolde($modsolde);
 
-       
+
 
         $errors = $validator->validate($transaction);
 
@@ -98,7 +98,5 @@ class TransactionController extends AbstractController
         ];
 
         return new JsonResponse($data, 201);
-       
-       
     }
 }
