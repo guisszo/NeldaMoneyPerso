@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Compte;
 use App\Entity\Profil;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
@@ -25,6 +26,9 @@ class UtilisateurControllerFormType extends AbstractType
             ->add('email',TextType::class)
             ->add('adresse',TextType::class)
             ->add('statut',TextType::class)
+            ->add('compte',EntityType::class,[
+                'class' => Compte::class,'choice_label'=> "numcompte"
+            ])
             ->add('profil',EntityType::class,['class' =>Profil::class])
             ->add('imageFile',VichImageType::class)
             

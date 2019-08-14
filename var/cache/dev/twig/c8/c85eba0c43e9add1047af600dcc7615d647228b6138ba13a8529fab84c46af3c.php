@@ -56,7 +56,7 @@ class __TwigTemplate_d6fbf65f7c3a64aacf0cb96b6bf73c23bd32fa6c6c1b85fbe448d93444c
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02 = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->enter($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "title"));
 
-        echo "Hello UtilisateurController!";
+        echo "Contrat de prestation de service";
         
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->leave($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof);
 
@@ -70,29 +70,25 @@ class __TwigTemplate_d6fbf65f7c3a64aacf0cb96b6bf73c23bd32fa6c6c1b85fbe448d93444c
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->enter($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "body"));
 
         // line 6
-        echo "<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+        echo "
+<h1>Contrat de prestation de service</h1>
+<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis reprehenderit tempore amet libero esse culpa, consectetur temporibus dolorem facere exercitationem? At sint, tempore porro cum accusamus earum maiores expedita ea!
+Maiores corporis est voluptatum officia fugiat veniam exercitationem reiciendis quam natus dolor at magni, iure atque ullam quia eos aliquid temporibus, deserunt vel libero quidem doloribus consectetur cumque. Voluptate, error.
+Ratione provident corrupti totam repudiandae animi suscipit necessitatibus dicta, nulla dolores repellendus obcaecati illo eos nobis tenetur earum quisquam sapiente. Architecto cupiditate, ad magnam tempore amet laudantium sit quod doloremque?
+In nihil ullam reiciendis, debitis officia necessitatibus a quisquam autem harum, porro architecto voluptatem maxime! Iusto libero aliquam reiciendis autem doloribus, impedit provident ipsa facilis aut, tenetur ducimus exercitationem esse.
+Est eaque natus provident laborum beatae, obcaecati reiciendis odio culpa, mollitia dignissimos, vero animi adipisci ducimus impedit? Dolorem, quos veniam corrupti voluptatibus natus ipsum in repellat nam cum officiis assumenda.
+</p>
+<p>Totam facilis iure ipsum voluptate accusamus? Numquam aspernatur exercitationem atque deleniti magnam optio quo obcaecati dolor sed officia, aut saepe ipsam! Dolorum eaque corrupti, explicabo alias fuga odio possimus quas!
+    Tempore, eligendi. Nam at eaque blanditiis magnam porro exercitationem aperiam asperiores aspernatur. Recusandae numquam assumenda praesentium ex nesciunt, culpa sed harum nulla? Nemo eligendi odit itaque perspiciatis obcaecati? Sequi, quam?
+    Nostrum dolor perferendis odio nam. Atque ex necessitatibus veritatis veniam perspiciatis nemo praesentium nesciunt in! Ea quis officiis, quisquam facilis reiciendis, asperiores, mollitia cupiditate quasi ipsum cum saepe non corporis?
+    Quae, fuga. Veniam, exercitationem impedit. Delectus molestias voluptates quam blanditiis maiores et fugiat, deserunt optio aliquam non perspiciatis debitis vero nesciunt consequuntur at omnis corporis ad eveniet, enim nisi culpa.
+    Delectus repudiandae quia aliquid cupiditate harum iure tenetur perspiciatis cum eos eveniet dolores blanditiis, ducimus est optio nesciunt voluptatibus hic deleniti labore. Tempore deleniti molestias quibusdam doloremque deserunt provident nobis?
+    Hic, id iusto corrupti aliquam, repudiandae possimus, velit iste veniam quia dolorum similique ipsum alias fugit. Ipsum modi tenetur non ab, quae obcaecati libero voluptate quas a doloribus pariatur praesentium.
+    Laborum at officia distinctio, ullam ex doloribus numquam animi culpa voluptatibus. Facilis sapiente aperiam perspiciatis impedit sed accusantium maxime? Consectetur fugit suscipit minus eaque amet laudantium quas cum, pariatur rem.
+    Est fugiat iste vitae excepturi harum et reprehenderit corporis eum ex illo reiciendis quasi amet suscipit a libero laborum cupiditate sequi voluptatum ullam aperiam officia, sapiente dolorum maiores? Debitis, commodi?
+    Aperiam necessitatibus corrupti perspiciatis molestias iure quaerat blanditiis reprehenderit ea, maxime nostrum reiciendis distinctio, eum corporis, illum harum consequuntur autem tempora eveniet soluta? Repudiandae ducimus fugiat in beatae commodi veritatis.
+    Ipsum voluptatibus sed repellendus id vero nesciunt, perferendis placeat. Esse laboriosam totam laborum obcaecati explicabo deleniti deserunt, consectetur cumque ex, harum, quidem necessitatibus molestias quo cum itaque nihil accusamus reprehenderit!</p>
 
-<div class=\"example-wrapper\">
-    <h1>Hello ";
-        // line 12
-        echo twig_escape_filter($this->env, (isset($context["controller_name"]) || array_key_exists("controller_name", $context) ? $context["controller_name"] : (function () { throw new RuntimeError('Variable "controller_name" does not exist.', 12, $this->source); })()), "html", null, true);
-        echo "! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href=\"";
-        // line 16
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\CodeExtension']->getFileLink("/home/ibrahima/Bureau/Individuel-API/NeldaMoney/src/Controller/UtilisateurController.php", 0), "html", null, true);
-        echo "\">src/Controller/UtilisateurController.php</a></code></li>
-        <li>Your template at <code><a href=\"";
-        // line 17
-        echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\CodeExtension']->getFileLink("/home/ibrahima/Bureau/Individuel-API/NeldaMoney/templates/utilisateur/index.html.twig", 0), "html", null, true);
-        echo "\">templates/utilisateur/index.html.twig</a></code></li>
-    </ul>
-</div>
 ";
         
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->leave($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof);
@@ -111,30 +107,35 @@ class __TwigTemplate_d6fbf65f7c3a64aacf0cb96b6bf73c23bd32fa6c6c1b85fbe448d93444c
 
     public function getDebugInfo()
     {
-        return array (  92 => 17,  88 => 16,  81 => 12,  73 => 6,  66 => 5,  53 => 3,  36 => 1,);
+        return array (  73 => 6,  66 => 5,  53 => 3,  36 => 1,);
     }
 
     public function getSourceContext()
     {
         return new Source("{% extends 'base.html.twig' %}
 
-{% block title %}Hello UtilisateurController!{% endblock %}
+{% block title %}Contrat de prestation de service{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class=\"example-wrapper\">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<h1>Contrat de prestation de service</h1>
+<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis reprehenderit tempore amet libero esse culpa, consectetur temporibus dolorem facere exercitationem? At sint, tempore porro cum accusamus earum maiores expedita ea!
+Maiores corporis est voluptatum officia fugiat veniam exercitationem reiciendis quam natus dolor at magni, iure atque ullam quia eos aliquid temporibus, deserunt vel libero quidem doloribus consectetur cumque. Voluptate, error.
+Ratione provident corrupti totam repudiandae animi suscipit necessitatibus dicta, nulla dolores repellendus obcaecati illo eos nobis tenetur earum quisquam sapiente. Architecto cupiditate, ad magnam tempore amet laudantium sit quod doloremque?
+In nihil ullam reiciendis, debitis officia necessitatibus a quisquam autem harum, porro architecto voluptatem maxime! Iusto libero aliquam reiciendis autem doloribus, impedit provident ipsa facilis aut, tenetur ducimus exercitationem esse.
+Est eaque natus provident laborum beatae, obcaecati reiciendis odio culpa, mollitia dignissimos, vero animi adipisci ducimus impedit? Dolorem, quos veniam corrupti voluptatibus natus ipsum in repellat nam cum officiis assumenda.
+</p>
+<p>Totam facilis iure ipsum voluptate accusamus? Numquam aspernatur exercitationem atque deleniti magnam optio quo obcaecati dolor sed officia, aut saepe ipsam! Dolorum eaque corrupti, explicabo alias fuga odio possimus quas!
+    Tempore, eligendi. Nam at eaque blanditiis magnam porro exercitationem aperiam asperiores aspernatur. Recusandae numquam assumenda praesentium ex nesciunt, culpa sed harum nulla? Nemo eligendi odit itaque perspiciatis obcaecati? Sequi, quam?
+    Nostrum dolor perferendis odio nam. Atque ex necessitatibus veritatis veniam perspiciatis nemo praesentium nesciunt in! Ea quis officiis, quisquam facilis reiciendis, asperiores, mollitia cupiditate quasi ipsum cum saepe non corporis?
+    Quae, fuga. Veniam, exercitationem impedit. Delectus molestias voluptates quam blanditiis maiores et fugiat, deserunt optio aliquam non perspiciatis debitis vero nesciunt consequuntur at omnis corporis ad eveniet, enim nisi culpa.
+    Delectus repudiandae quia aliquid cupiditate harum iure tenetur perspiciatis cum eos eveniet dolores blanditiis, ducimus est optio nesciunt voluptatibus hic deleniti labore. Tempore deleniti molestias quibusdam doloremque deserunt provident nobis?
+    Hic, id iusto corrupti aliquam, repudiandae possimus, velit iste veniam quia dolorum similique ipsum alias fugit. Ipsum modi tenetur non ab, quae obcaecati libero voluptate quas a doloribus pariatur praesentium.
+    Laborum at officia distinctio, ullam ex doloribus numquam animi culpa voluptatibus. Facilis sapiente aperiam perspiciatis impedit sed accusantium maxime? Consectetur fugit suscipit minus eaque amet laudantium quas cum, pariatur rem.
+    Est fugiat iste vitae excepturi harum et reprehenderit corporis eum ex illo reiciendis quasi amet suscipit a libero laborum cupiditate sequi voluptatum ullam aperiam officia, sapiente dolorum maiores? Debitis, commodi?
+    Aperiam necessitatibus corrupti perspiciatis molestias iure quaerat blanditiis reprehenderit ea, maxime nostrum reiciendis distinctio, eum corporis, illum harum consequuntur autem tempora eveniet soluta? Repudiandae ducimus fugiat in beatae commodi veritatis.
+    Ipsum voluptatibus sed repellendus id vero nesciunt, perferendis placeat. Esse laboriosam totam laborum obcaecati explicabo deleniti deserunt, consectetur cumque ex, harum, quidem necessitatibus molestias quo cum itaque nihil accusamus reprehenderit!</p>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href=\"{{ '/home/ibrahima/Bureau/Individuel-API/NeldaMoney/src/Controller/UtilisateurController.php'|file_link(0) }}\">src/Controller/UtilisateurController.php</a></code></li>
-        <li>Your template at <code><a href=\"{{ '/home/ibrahima/Bureau/Individuel-API/NeldaMoney/templates/utilisateur/index.html.twig'|file_link(0) }}\">templates/utilisateur/index.html.twig</a></code></li>
-    </ul>
-</div>
 {% endblock %}
 ", "utilisateur/index.html.twig", "/home/ibrahima/Bureau/Individuel-API/NeldaMoney/templates/utilisateur/index.html.twig");
     }

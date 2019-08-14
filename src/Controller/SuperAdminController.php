@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Entity\Compte;
 use App\Entity\Profil;
 use App\Entity\Partenaire;
@@ -25,12 +27,15 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class SuperAdminController extends AbstractController
 {
+
     private $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
     }
+
+
     /**
      * @Route("/regpart", name="registerpartenaire", methods={"POST"})
      * @IsGranted("ROLE_SUPER_ADMIN")
@@ -43,15 +48,16 @@ class SuperAdminController extends AbstractController
         ValidatorInterface $validator,
         PartenaireRepository $repository
     ) {
+        $constante = 'actif';
 
-        $values= $request->request->all();
+        $values = $request->request->all();
 
         /********************** Insertion Partenaire ***********************/
 
         $partenaire = new Partenaire();
         $form = $this->createForm(PartenaireType::class, $partenaire);
         $form->submit($values);
-        $partenaire->setStatut('actif');
+        $partenaire->setStatut($constante);
         $entityManager->persist($partenaire);
         $entityManager->flush();
 
@@ -88,40 +94,41 @@ class SuperAdminController extends AbstractController
                 $cpt = $repository->find($compte->getId());
 
 
-                    $utilisateur = new Utilisateur();
-                    $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
-                    $file=$request->files->all()['imageName'];
-                    $form->submit($values);
-                  
-                    $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur,$form->get('password')->getData()));
-                    $utilisateur->setRoles(['ROLE_PARTENAIRE']);
-                    $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
-                    $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
-                    $utilisateur->setStatut('actif');
-                    $utilisateur->setImageFile($file);
-                    $utilisateur->setcreatedAt(new \Datetime);
-                    $utilisateur->setUpdatedAt(new \Datetime);
+                $utilisateur = new Utilisateur();
+                $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
+                $file = $request->files->all()['imageName'];
+                $form->submit($values);
 
-                    $errors = $validator->validate($utilisateur);
+                $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
+                $utilisateur->setRoles(['ROLE_PARTENAIRE']);
+                $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
+                $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
+                $utilisateur->setStatut($constante);
+                $utilisateur->setImageFile($file);
+                $utilisateur->setcreatedAt(new \Datetime);
+                $utilisateur->setUpdatedAt(new \Datetime);
 
-                    if (count($errors)) {
-                        $errors = $serializer->serialize($errors, 'json');
-                        return new Response($errors, 500, [
-                            'Content-Type' => 'application/json'
-                        ]);
-                    }
-                    $entityManager->persist($utilisateur);
-                    $entityManager->flush();
+                $errors = $validator->validate($utilisateur);
+
+                if (count($errors)) {
+                    $errors = $serializer->serialize($errors, 'json');
+                    return new Response($errors, 500, [
+                        'Content-Type' => 'application/json'
+                    ]);
+                }
+                $entityManager->persist($utilisateur);
+                $entityManager->flush();
 
 
 
-                    $data = [
-                        'statut' => 201,
-                        'msge' => 'Le partenaire a été créé'
-                    ];
 
-                    return new JsonResponse($data, 201);
-               
+
+                $data = [
+                    'status' => 201,
+                    'msge' => 'Le partenaire a été créé'
+                ];
+
+                return new JsonResponse($data, 201);
             }
         }
     }
@@ -131,6 +138,8 @@ class SuperAdminController extends AbstractController
 
     /**
      * @Route("/registeruser", name="registeruser", methods={"POST"})
+     * IsGranted("ROLE_PARTENAIRE")
+     * IsGranted("ROLE_SUPER_ADMIN")
      */
     public function reguser(
         Request $request,
@@ -139,116 +148,115 @@ class SuperAdminController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
+        $constante = 'actif';
+        $values = $request->request->all();
 
-         $values= $request->request->all();
-            
-            $utilisateur = new Utilisateur();
-            $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
-            $file=$request->files->all()['imageName'];
-            $form->submit($values);
-            $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
-            
-            $repository = $this->getDoctrine()->getRepository(Profil::class);
-                $profils = $repository->find($values['profil']);
-                $utilisateur->setProfil($profils);
+        $utilisateur = new Utilisateur();
+        $form = $this->createForm(UtilisateurControllerFormType::class, $utilisateur);
+        $file = $request->files->all()['imageName'];
+        $form->submit($values);
+        $utilisateur->setPassword($passwordEncoder->encodePassword($utilisateur, $form->get('password')->getData()));
 
-            if($profils->getLibelle()=="admin"){
+        $repository = $this->getDoctrine()->getRepository(Profil::class);
+        $profils = $repository->find($values['profil']);
+        $utilisateur->setProfil($profils);
 
-                if($this->getUser()->getRoles()[0]!="ROLE_SUPER_ADMIN" &&
-                $this->getUser()->getRoles()[0]!= "ROLE_ADMIN"
-                ){
+        if ($profils->getLibelle() == "admin") {
 
-                    $data = [
-                        'statut' => 401,
-                        'msge3' => 'acces refuse, vous etes pas autorise a faire cette action'
-                    ];
+            if (
+                $this->getUser()->getRoles()[0] != "ROLE_SUPER_ADMIN" &&
+                $this->getUser()->getRoles()[0] != "ROLE_ADMIN"
+            ) {
 
-                    return new JsonResponse($data, 401);
-                }
+                $data = [
+                    'sta' => 401,
+                    'msge3' => 'acces refuse, vous etes pas autorise a faire cette action'
+                ];
 
-                $utilisateur->setRoles(['ROLE_ADMIN']);
-
-            }elseif($profils->getLibelle()=="caissier"){
-               
-                if($this->getUser()->getRoles()[0]!="ROLE_SUPER_ADMIN" &&
-                $this->getUser()->getRoles()[0] !="ROLE_ADMIN"
-                ){
-
-                   $data = [
-                        'statut' => 401,
-                        'msge4' => 'acces refuse, vous etes pas autorise a faire cette action'
-                    ];
-
-                    return new JsonResponse($data, 401);
-                }
-                $utilisateur->setRoles(['ROLE_CAISSIER']);
-
-            }elseif($profils->getLibelle()=="partenaire_admin"){
-
-                if($this->getUser()->getRoles()[0]!="ROLE_PARTENAIRE" &&
-                $this->getUser()->getRoles()[0] !="ROLE_PARTENAIRE_ADMIN"
-                ){
-                    
-                    $data = [
-                        'statut' => 401,
-                        'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
-                    ];
-
-                    return new JsonResponse($data, 401);
-                }
-               $users=$this->getUser()->getPartenaire();
-
-               $utilisateur->setPartenaire($users);
-                $utilisateur->setRoles(['ROLE_PARTENARE_ADMIN']);
-
-
-            }elseif($profils->getLibelle()=="user"){
-
-                if($this->getUser()->getRoles()[0]!="ROLE_PARTENAIRE" &&
-                $this->getUser()->getRoles()[0] !="ROLE_PARTENAIRE_ADMIN"
-                ){
-                    
-                    $data = [
-                        'statut' => 401,
-                        'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
-                    ];
-
-                    return new JsonResponse($data, 401);
-                }
-                $users=$this->getUser()->getPartenaire();
-               
-               $utilisateur->setPartenaire($users);
-                $utilisateur->setRoles(['ROLE_USER']);
+                return new JsonResponse($data, 401);
             }
 
-       
-            $utilisateur->setStatut('actif');
-            $utilisateur->setImageFile($file);
-            $utilisateur->setcreatedAt(new \Datetime);
-            $utilisateur->setUpdatedAt(new \Datetime);
-          
+            $utilisateur->setRoles(['ROLE_ADMIN']);
+        } elseif ($profils->getLibelle() == "caissier") {
 
-            $errors = $validator->validate($utilisateur);
+            if (
+                $this->getUser()->getRoles()[0] != "ROLE_SUPER_ADMIN" &&
+                $this->getUser()->getRoles()[0] != "ROLE_ADMIN"
+            ) {
 
-            if (count($errors)) {
-                $errors = $serializer->serialize($errors, 'json');
-                return new Response($errors, 500, [
-                    'Content-Type' => 'application/json'
-                ]);
+                $data = [
+                    'sta' => 401,
+                    'msge4' => 'acces refuse, vous etes pas autorise a faire cette action'
+                ];
+
+                return new JsonResponse($data, 401);
             }
-           
-            $entityManager->persist($utilisateur);
-            $entityManager->flush();
+            $utilisateur->setRoles(['ROLE_CAISSIER']);
+        } elseif ($profils->getLibelle() == "partenaire_admin") {
 
-            
+            if (
+                $this->getUser()->getRoles()[0] !== "ROLE_PARTENAIRE" &&
+                $this->getUser()->getRoles()[0] !== "ROLE_PARTENAIRE_ADMIN"
+            ) {
 
-            $data = [
-                'stts' => 201,
-                'me' => 'L\'utilisateur a été créé'
-            ];
+                $data = [
+                    'statut' => 401,
+                    'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                ];
 
-            return new JsonResponse($data, 201);
-       
+                return new JsonResponse($data, 401);
+            }
+            $users = $this->getUser()->getPartenaire();
+
+            $utilisateur->setPartenaire($users);
+            $utilisateur->setRoles(['ROLE_PARTENAIRE_ADMIN']);
+        } elseif ($profils->getLibelle() == "user") {
+
+            if (
+                $this->getUser()->getRoles()[0] != "ROLE_PARTENAIRE" &&
+                $this->getUser()->getRoles()[0] != "ROLE_PARTENAIRE_ADMIN"
+            ) {
+
+                $data = [
+                    'statut' => 401,
+                    'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                ];
+
+                return new JsonResponse($data, 401);
+            }
+            $users = $this->getUser()->getPartenaire();
+
+            $utilisateur->setPartenaire($users);
+            $utilisateur->setRoles(['ROLE_USER']);
+        }
+
+
+        $utilisateur->setStatut($constante);
+        $utilisateur->setImageFile($file);
+        $utilisateur->setcreatedAt(new \Datetime);
+        $utilisateur->setUpdatedAt(new \Datetime);
+
+
+        $errors = $validator->validate($utilisateur);
+
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, [
+                'Content-Type' => 'application/json'
+            ]);
+        }
+
+        $entityManager->persist($utilisateur);
+        $entityManager->flush();
+
+
+
+        $data = [
+            'stts' => 201,
+            'me' => 'L\'utilisateur a été créé'
+        ];
+
+        return new JsonResponse($data, 201);
     }
 
     /************************** modification d'un user ******************/
@@ -257,37 +265,70 @@ class SuperAdminController extends AbstractController
     /**
      * @Route("/modif_user/{id}" , name="modif_user" , methods={"PUT"})
      * @IsGranted("ROLE_SUPER_ADMIN")
-    */
+     */
     public function update($id)
     {
+        $constante = 'actif';
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
         $partStat = $utilisateur->getPartenaire()->getStatut();
         if (!$utilisateur) {
             throw $this->createNotFoundException(
-                'pas d\'utilisateur trouve pour cet id '.$id
+                'pas d\'utilisateur trouve pour cet id ' . $id
             );
         }
-       
-        $parts=$utilisateur->getPartenaire();
-        if($partStat== "actif"){
 
-        
-       $parts->setStatut('bloque');
-       $utilisateur->setStatut('bloque');
+        $parts = $utilisateur->getPartenaire();
+        if ($partStat == "actif") {
 
-    }else{
-       
-        $parts->setStatut('actif');
-        $utilisateur->setStatut('actif');
-    }
+
+            $parts->setStatut('bloque');
+            $utilisateur->setStatut('bloque');
+        } else {
+
+            $parts->setStatut($constante);
+            $utilisateur->setStatut($constante);
+        }
         $entityManager->flush();
-    
+
         $data = [
-                    'sta' => 200,
-                    'mes' => 'L\'utilisateur a bien ete mis a jour'
-                ];
-                return new JsonResponse($data);
+            'sta' => 200,
+            'mes' => 'Le statut a ete bien mis a jour'
+        ];
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/modif_partuser/{id}" , name="modif_partuser" , methods={"PUT"})
+     * @IsGranted("ROLE_PARTENAIRE")
+     */
+    public function updatePartuser($id)
+    {
+        $constante = 'actif';
+        $entityManager = $this->getDoctrine()->getManager();
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
+        if (!$utilisateur) {
+            throw $this->createNotFoundException(
+                'pas d\'utilisateur trouve pour cet id ' . $id
+            );
+        }
+
+        if ($utilisateur->getStatut() == "actif") {
+
+
+            $utilisateur->setStatut('bloque'); #c'est au niveau de ces lignes que se situe
+            #mon problème pour le blocage et le deblocage
+        } else {
+
+            $utilisateur->setStatut($constante);
+        }
+        $entityManager->flush();
+
+        $data = [
+            'sta' => 200,
+            'mes' => 'Le statut a ete bien mis a jour'
+        ];
+        return new JsonResponse($data);
     }
 
     /********************************************************/
@@ -297,46 +338,41 @@ class SuperAdminController extends AbstractController
      */
     public function creationCompte(
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
         EntityManagerInterface $entityManager,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PartenaireRepository $repository
-    ){
+    ) {
         #################recupération de l'ID du Partenaire####################
 
         $values = json_decode($request->getContent());
         $repository = $this->getDoctrine()->getRepository(Partenaire::class);
-    
+
         $partenaire = $repository->findOneBy(['ninea' => $values->ninea]);
-        $user= $this->getUser();
-      
+        $user = $this->getUser();
+
         if ($partenaire) {
-          $compte= new Compte();
-          $min = 10000;
-          $max = 99999;
-          $date       = new \DateTime;
-          $concat   = $date->format('ydHs');
-          $compte_rand = rand($min, $max) . $concat;
-          $compte->setNumcompte($compte_rand);
-          $compte->setSolde(0);
-          $compte->setPartenaire($partenaire); # Insertion de l'ID du partenaire
-          $compte->setCreatedAt(new \DateTime);
-          $entityManager->persist($compte);
-          $entityManager->flush();
-          $data = [
-            'sta' => 201,
-            'mes' => 'Le nouveau compte a ete cree par '.$user->getNomcomplet()
-        ];
-        return new JsonResponse($data);
-        }else 
-        {
-          $data = [
-              'st' => 500,
-              'mes' => 'ce partenaire n\'existe pas'
-          ];
-          return new JsonResponse($data);
+            $compte = new Compte();
+            $min = 10000;
+            $max = 99999;
+            $date       = new \DateTime;
+            $concat   = $date->format('ydHs');
+            $compte_rand = rand($min, $max) . $concat;
+            $compte->setNumcompte($compte_rand);
+            $compte->setSolde(0);
+            $compte->setPartenaire($partenaire); # Insertion de l'ID du partenaire
+            $compte->setCreatedAt(new \DateTime);
+            $entityManager->persist($compte);
+            $entityManager->flush();
+            $data = [
+                'sta' => 201,
+                'mes' => 'Le nouveau compte a ete cree par ' . $user->getNomcomplet()
+            ];
+            return new JsonResponse($data);
+        } else {
+            $data = [
+                'st' => 500,
+                'mes' => 'ce partenaire n\'existe pas'
+            ];
+            return new JsonResponse($data);
         }
-      
     }
 }

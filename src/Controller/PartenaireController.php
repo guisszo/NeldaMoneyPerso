@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Controller;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Entity\Compte;
 use App\Entity\Partenaire;
 use App\Entity\Utilisateur;
@@ -62,8 +63,8 @@ class PartenaireController extends AbstractController
 
 
             $data = [
-                'status' => 201,
-                'message' => 'L\'utilisateur a été créé'
+                'stat' => 201,
+                'mess' => 'L\'utilisateur a été créé'
             ];
 
             return new JsonResponse($data, 201);
@@ -106,5 +107,36 @@ class PartenaireController extends AbstractController
             'message' => 'Le user a bien été mis à jour'
         ];
         return new JsonResponse($data);
+    }
+    /**
+     * @Route("/contrat", name="contrat",methods={"GET"})
+     */public function contrat()
+     {
+        $pdfOptions = new Options();
+                    $pdfOptions->set('defaultFont', 'Arial');
+                    
+                    // Instantiate Dompdf with our options
+                    $dompdf = new Dompdf($pdfOptions);
+                    
+                    // Retrieve the HTML generated in our twig file
+                    $html = $this->renderView('utilisateur/index.html.twig', [
+                        'title' => "contrat"
+                    ]);
+                    
+                    // Load HTML to Dompdf
+                    $dompdf->loadHtml($html);
+                    
+                    // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+                    $dompdf->setPaper('A4', 'portrait');
+            
+                    // Render the HTML as PDF
+                    $dompdf->render();
+            
+                    // Output the generated PDF to Browser (inline view)
+                    $dompdf->stream("contrat.pdf", [
+                        "Attachment" => false
+                    ]);
+                    
+                    return $html;
     }
 }

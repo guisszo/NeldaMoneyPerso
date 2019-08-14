@@ -19,22 +19,21 @@ class TarifsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tarifs::class);
     }
 
-    // /**
-    //  * @return Tarifs[] Returns an array of Tarifs objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Tarifs[] Returns an array of Tarifs objects
+     */
+
+    public function findtarif($value)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
+            ->andWhere('t.borneInferieure <= :val ')
+            ->andWhere(' t.borneSuperieure >= :val')
             ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Tarifs

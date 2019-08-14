@@ -56,7 +56,7 @@ class __TwigTemplate_ce4ff3a1ff2ee02258b95cc5747fa5b5ad40a2db5f37fd99493ff126ac5
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02 = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->enter($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "title"));
 
-        echo "Hello PartenaireController!";
+        echo "Contrat de prestation de service";
         
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->leave($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof);
 
@@ -118,7 +118,7 @@ class __TwigTemplate_ce4ff3a1ff2ee02258b95cc5747fa5b5ad40a2db5f37fd99493ff126ac5
     {
         return new Source("{% extends 'base.html.twig' %}
 
-{% block title %}Hello PartenaireController!{% endblock %}
+{% block title %}Contrat de prestation de service{% endblock %}
 
 {% block body %}
 <style>

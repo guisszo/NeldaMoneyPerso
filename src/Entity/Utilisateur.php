@@ -103,6 +103,8 @@ class Utilisateur implements UserInterface
     public function __construct()
     {
         $this->depots = new ArrayCollection();
+        $this->userRetrait = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
      /**
@@ -144,6 +146,13 @@ class Utilisateur implements UserInterface
      * @ORM\JoinColumn(nullable=true)
      */
     private $profil;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="userEnvoi")
+     */
+    private $transactions;
+
+   
 
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -415,4 +424,37 @@ class Utilisateur implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setUserEnvoi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getUserEnvoi() === $this) {
+                $transaction->setUserEnvoi(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
 }

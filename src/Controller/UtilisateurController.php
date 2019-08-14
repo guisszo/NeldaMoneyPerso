@@ -74,16 +74,14 @@ class UtilisateurController extends AbstractController
            
             $data = [
                 'sta' => 400,
-                'mes' => 'Desole '.$user->getNomcomplet().', vous etes bloque, contacter votre admin'
+                'mes' => 'Desole '.$user->getNomcomplet().', vous etes bloque, contacter l\' admin'
             ];
             return new JsonResponse($data);
         
         }
-          
-            if($user->getRoles()==["ROLE_USER"] && 
-            $user->getPartenaire()->getStatut()==="bloque" || 
-            $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"]
-            && $user->getPartenaire()->getStatut()==="bloque" ){
+        
+        if($user->getRoles()==["ROLE_USER"] && $user->getPartenaire()->getStatut()==="bloque" || 
+            $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"] && $user->getPartenaire()->getStatut()==="bloque" ){
                 
                     $data = [
                         'sta' => 401,
