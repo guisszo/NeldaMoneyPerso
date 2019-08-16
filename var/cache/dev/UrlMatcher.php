@@ -16,6 +16,7 @@ return [
         '/api/createCpt' => [[['_route' => 'crationCompte', '_controller' => 'App\\Controller\\SuperAdminController::creationCompte'], null, ['POST' => 0], null, false, false, null]],
         '/api/transaction' => [[['_route' => 'transaction', '_controller' => 'App\\Controller\\TransactionController::index'], null, null, null, false, false, null]],
         '/api/envoi' => [[['_route' => 'envoi', '_controller' => 'App\\Controller\\TransactionController::envoi'], null, ['POST' => 0], null, false, false, null]],
+        '/api/retrait' => [[['_route' => 'retrait', '_controller' => 'App\\Controller\\TransactionController::retrait'], null, ['POST' => 0], null, false, false, null]],
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],
         '/api/login_chec' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::token'], null, ['POST' => 0], null, false, false, null]],
         '/api/depot' => [[['_route' => 'depot', '_controller' => 'App\\Controller\\UtilisateurController::depot'], null, ['POST' => 0], null, false, false, null]],

@@ -138,8 +138,7 @@ class SuperAdminController extends AbstractController
 
     /**
      * @Route("/registeruser", name="registeruser", methods={"POST"})
-     * IsGranted("ROLE_PARTENAIRE")
-     * IsGranted("ROLE_SUPER_ADMIN")
+     * IsGranted("ROLE_SUPER_ADMIN","ROLE_PARTENAIRE")
      */
     public function reguser(
         Request $request,
@@ -235,6 +234,7 @@ class SuperAdminController extends AbstractController
         $utilisateur->setImageFile($file);
         $utilisateur->setcreatedAt(new \Datetime);
         $utilisateur->setUpdatedAt(new \Datetime);
+        $utilisateur->setCompte($form->get('compte')->getData());
 
 
         $errors = $validator->validate($utilisateur);
@@ -272,6 +272,7 @@ class SuperAdminController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
         $partStat = $utilisateur->getPartenaire()->getStatut();
+        
         if (!$utilisateur) {
             throw $this->createNotFoundException(
                 'pas d\'utilisateur trouve pour cet id ' . $id
@@ -316,8 +317,8 @@ class SuperAdminController extends AbstractController
         if ($utilisateur->getStatut() == "actif") {
 
 
-            $utilisateur->setStatut('bloque'); #c'est au niveau de ces lignes que se situe
-            #mon problème pour le blocage et le deblocage
+            $utilisateur->setStatut('bloque'); 
+            
         } else {
 
             $utilisateur->setStatut($constante);

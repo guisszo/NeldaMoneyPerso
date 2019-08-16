@@ -14,6 +14,7 @@ return [
     'crationCompte' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::creationCompte'], [], [['text', '/api/createCpt']], [], []],
     'transaction' => [[], ['_controller' => 'App\\Controller\\TransactionController::index'], [], [['text', '/api/transaction']], [], []],
     'envoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::envoi'], [], [['text', '/api/envoi']], [], []],
+    'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::token'], [], [['text', '/api/login_chec']], [], []],
     'depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::depot'], [], [['text', '/api/depot']], [], []],

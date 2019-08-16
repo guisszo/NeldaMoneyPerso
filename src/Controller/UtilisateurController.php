@@ -28,10 +28,10 @@ class UtilisateurController extends AbstractController
     {
         $this->encoder = $encoder;
     }
-   
+
     /************************ Authentification ************************/
 
-    
+
     /**
      *  @Route("/login_chec", name="login", methods={"POST"})
      * @param Request $request
@@ -42,24 +42,24 @@ class UtilisateurController extends AbstractController
     public function token(Request $request, JWTEncoderInterface $JWTEncoder)
     {
         $values = json_decode($request->getContent());
-        
-        $username= $values->username;
-        $mdp= $values->password;
+
+        $username = $values->username;
+        $mdp = $values->password;
 
         $user = $this->getDoctrine()->getRepository(Utilisateur::class)->findOneBy([
             'username' => $username
         ]);
-      
-    
+
+
         if (!$user) {
-           
+
             $data = [
-                'sta' => 400,
+                'sta' => 401,
                 'me' => 'cette utilisateur n existe pas'
             ];
             return new JsonResponse($data);
         }
-        
+
 
         $isValid = $this->encoder->isPasswordValid($user, $mdp);
         if (!$isValid) {
@@ -69,32 +69,50 @@ class UtilisateurController extends AbstractController
             ];
             return new JsonResponse($data);
         }
-        if($user->getStatut()==="bloque" ){
-           
-           
+
+
+        if (
+            $user->getRoles() == ["ROLE_USER"] &&
+            $user->getPartenaire()->getStatut() === "bloque" ||
+            $user->getRoles() == ["ROLE_PARTENAIRE_ADMIN"] &&
+            $user->getPartenaire()->getStatut() === "bloque"
+        ) {
+
             $data = [
-                'sta' => 400,
-                'mes' => 'Desole '.$user->getNomcomplet().', vous etes bloque, contacter l\' admin'
+                'sta' => 401,
+                'mes' => 'desole ' . $user->getNomcomplet() . ', vous avez pas acces aux services car ' . $user->getPartenaire()->getRaisonSociale() . 'est bloque'
             ];
             return new JsonResponse($data);
-        
         }
-        
-        if($user->getRoles()==["ROLE_USER"] && $user->getPartenaire()->getStatut()==="bloque" || 
-            $user->getRoles()==["ROLE_PARTENAIRE_ADMIN"] && $user->getPartenaire()->getStatut()==="bloque" ){
-                
-                    $data = [
-                        'sta' => 401,
-                        'mes' => 'desole '.$user->getNomcomplet().', vous avez pas acces aux services car votre partenaire est bloque'
-                    ];
-                    return new JsonResponse($data);
-                
-            }
-    
+
+
+        if (
+            $user->getRoles() == ["ROLE_USER"] &&
+            $user->getStatut() === "bloque" ||
+            $user->getRoles() == ["ROLE_PARTENAIRE_ADMIN"] &&
+            $user->getStatut() === "bloque"
+        ) {
+            $data = [
+                'sta' => 401,
+                'mes2' => 'acces refuse ' . $user->getNomcomplet() . ', vous etes bloque par ' . $user->getPartenaire()->getRaisonSociale()
+            ];
+            return new JsonResponse($data);
+        }
+
+        if ($user->getStatut() === "bloque") {
+
+
+            $data = [
+                'sta' => 401,
+                'mes' => 'Desole ' . $user->getNomcomplet() . ', vous etes bloque, contacter l\' admin'
+            ];
+            return new JsonResponse($data);
+        }
+
         $token = $JWTEncoder->encode([
-                'username' => $user->getUsername(),
-                'exp' => time() + 7200 // 2 heures de validité
-            ]);
+            'username' => $user->getUsername(),
+            'exp' => time() + 7200 // 2 heures de validité
+        ]);
 
         return new JsonResponse(['token' => $token]);
     }
@@ -103,14 +121,17 @@ class UtilisateurController extends AbstractController
 
     /**
      * @Route("/depot" , name="depot" , methods={"POST"})
-     * @IsGranted("ROLE_CAISSIER")
+     * @IsGranted("ROLE_CAISSIER", statuscode=403, message="Vous etes pas autorise a faire cette action")
      */
-    public function depot(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    public function depot(Request $request, 
+    SerializerInterface $serializer, 
+    ValidatorInterface $validator, 
+    EntityManagerInterface $entityManager)
     {
         $user = $this->getUser();
-
-
         $values = json_decode($request->getContent());
+
+
         try {
             if ($values->montant < 75000) {
                 $exception = [
@@ -167,6 +188,4 @@ class UtilisateurController extends AbstractController
     }
 
     /****************************************************************************/
-       
-     
 }

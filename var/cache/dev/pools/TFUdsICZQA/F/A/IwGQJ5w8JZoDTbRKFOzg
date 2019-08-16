@@ -26,6 +26,12 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
             'attributes' => [
                 1 => 'ROLE_CAISSIER',
             ],
+            'message' => [
+                1 => 'Vous etes pas autorise a faire cette action',
+            ],
+            'statusCode' => [
+                1 => 403,
+            ],
         ],
     ],
     [
