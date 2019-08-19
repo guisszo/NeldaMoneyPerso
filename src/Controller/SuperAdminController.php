@@ -12,6 +12,7 @@ use App\Form\PartenaireType;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\UtilisateurControllerFormType;
+use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -375,5 +376,41 @@ class SuperAdminController extends AbstractController
             ];
             return new JsonResponse($data);
         }
+    }
+    /**
+     * @Route("/listePartblock", name="listePartblock", methods={"GET"})
+     * IsGranted("ROLE_SUPER_ADMIN")
+     */
+    public function listePartblock(PartenaireRepository $parte,SerializerInterface $serializer){
+        
+        $partenair = $parte->findBy(['statut'=>'bloque']);
+          
+
+        $data = $serializer->serialize($partenair, 'json', [
+            'groups' => ['liste']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
+    }
+     /**
+     * @Route("/listePart", name="listePart", methods={"GET"})
+     * IsGranted("ROLE_SUPER_ADMIN")
+     */
+    public function listePart(PartenaireRepository $parte,SerializerInterface $serializer){
+        
+        $partenair = $parte->findAll();
+          
+
+        $data = $serializer->serialize($partenair, 'json', [
+            'groups' => ['liste']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
     }
 }

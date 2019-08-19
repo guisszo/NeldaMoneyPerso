@@ -6,10 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
  * @UniqueEntity(fields={"username"}, message="Ce nom d'utilisateur est deja pris")
@@ -28,11 +29,13 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"listeutile"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"listeutile"})
      */
     private $roles = [];
 
@@ -50,16 +53,19 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups({"listeutile"})
      */
     private $nomcomplet;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="utilisateurs")
+     * @Groups({"listeutile"})
      */
     private $partenaire;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="utilisateurs")
+     * @Groups({"listeutile"})
      */
     private $compte;
 
@@ -71,27 +77,32 @@ class Utilisateur implements UserInterface
      *     match=true,
      *     message="Votre numero ne doit pas contenir de lettre"
      * )
+     * @Groups({"listeutile"})
      */
     private $tel;
 
     /**
      * @ORM\Column(type="string", length=125)
+     * @Groups({"listeutile"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"listeutile"})
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups({"listeutile"})
      */
     private $statut;
 
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"listeutile"})
      */
     private $createdAt;
 

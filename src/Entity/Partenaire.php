@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -27,11 +28,14 @@ class Partenaire
     /**
      * @ORM\Column(name="raisonSociale",type="string", length=255, unique=true)
      * @Assert\NotBlank(message="Veuillez saisir le raison social")
+     * @Groups({"liste"})
      */
     private $raisonSociale;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(message="Veuillez saisir le niena")
+     * @Groups({"liste"})
      */
     private $ninea;
 
@@ -47,6 +51,7 @@ class Partenaire
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"liste"})
      */
     private $statut;
 

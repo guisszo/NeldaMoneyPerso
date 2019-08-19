@@ -20,16 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class TransactionController extends AbstractController
 {
-    /**
-     * @Route("/transaction", name="transaction")
-     */
-    public function index()
-    {
-        return $this->render('transaction/index.html.twig', [
-            'controller_name' => 'TransactionController',
-        ]);
-    }
-
+    
     #####################################################################################
     ########################### creation de la fonction d'envoi #########################
 
@@ -68,7 +59,13 @@ class TransactionController extends AbstractController
 
         ############### et on donne ce montant à la fonction findtarif pour trouver
         ############### l'intervalle où se trouve les frais d'envoi
-        $value = $repo->findtarif($valeur);
+        
+         if(2000001 <= $valeur && $valeur< 3000000){
+            $value= $valeur *0.2;
+        }else{
+            $value = $repo->findtarif($valeur);
+        }
+       
         ######## calcul des commisions avec le tarif trouvé
 
         $transaction->setCommissionEnv($value[0]->getValeur() * 0.1);
@@ -138,13 +135,14 @@ class TransactionController extends AbstractController
         ################ on recupere le montant qui est envoyé ################
         $valeur = $codeGen->getMontant();
 
-        #####################################################################
-
-
-
         ############### et on donne ce montant à la fonction findtarif pour trouver
         ############### l'intervalle où se trouve les frais d'envoi
-        $value = $repos->findtarif($valeur);
+       
+        if(2000001 <= $valeur && $valeur< 3000000){
+            $value= $valeur *0.2;
+        }else{
+            $value = $repos->findtarif($valeur);
+        }
         ######## calcul de la commission grace à la tarif trouvée
 
         $codeGen->setCommissionRetrait($value[0]->getValeur() * 0.2);
