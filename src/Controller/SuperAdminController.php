@@ -413,4 +413,25 @@ class SuperAdminController extends AbstractController
             'Content-Type' => 'application/json'
         ]);
     }
+
+    /**
+     * @Route("/listeusers", name="listeusers", methods={"GET"})
+     */
+
+    public function listerusers(UtilisateurRepository $util,SerializerInterface $serializer){
+        
+        $utilisateurs = $util->findAll();
+          
+
+        $data = $serializer->serialize($utilisateurs, 'json', [
+            'groups' => ['listeutile']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
+    }
+
+
 }

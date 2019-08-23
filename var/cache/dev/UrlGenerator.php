@@ -14,6 +14,7 @@ return [
     'crationCompte' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::creationCompte'], [], [['text', '/api/createCpt']], [], []],
     'listePartblock' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePartblock'], [], [['text', '/api/listePartblock']], [], []],
     'listePart' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePart'], [], [['text', '/api/listePart']], [], []],
+    'listeusers' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listerusers'], [], [['text', '/api/listeusers']], [], []],
     'envoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::envoi'], [], [['text', '/api/envoi']], [], []],
     'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],
