@@ -33,7 +33,7 @@ class UtilisateurController extends AbstractController
 
 
     /**
-     *  @Route("/login_chec", name="login", methods={"POST"})
+     *  @Route("/login", name="login", methods={"POST"})
      * @param Request $request
      * @param JWTEncoderInterface $JWTEncoder
      * @return JsonResponse
@@ -111,6 +111,7 @@ class UtilisateurController extends AbstractController
 
         $token = $JWTEncoder->encode([
             'username' => $user->getUsername(),
+            'role' => $user->getRoles()[0],
             'exp' => time() + 7200 // 2 heures de validité
         ]);
 

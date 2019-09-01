@@ -123,7 +123,6 @@ class TransactionController extends AbstractController
         ############# comparaison du code avec celui généré #################
         $repo = $this->getDoctrine()->getRepository(Transaction::class);
         $codeGen = $repo->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
-        #var_dump($codeGen);die();
 
         if (!$codeGen) {
             throw new NotFoundHttpException('ce conde n\'existe pas ');

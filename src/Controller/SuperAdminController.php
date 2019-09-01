@@ -12,6 +12,7 @@ use App\Form\PartenaireType;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\UtilisateurControllerFormType;
+use App\Repository\ProfilRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -425,6 +426,25 @@ class SuperAdminController extends AbstractController
 
         $data = $serializer->serialize($utilisateurs, 'json', [
             'groups' => ['listeutile']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
+    }
+
+    /**
+     * @Route("/selecProfile", name="selecProfile", methods={"GET"})
+     */
+
+    public function selectProfile(ProfilRepository $profile,SerializerInterface $serializer){
+        
+        $profiles = $profile->findAll();
+          
+
+        $data = $serializer->serialize($profiles, 'json', [
+            'groups' => ['listeProfile']
         ]);
       
 
