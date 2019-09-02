@@ -72,17 +72,7 @@ class Compte
         return $this;
     }
 
-    public function getSolde(): ?int
-    {
-        return $this->solde;
-    }
-
-    public function setSolde(int $solde): self
-    {
-        $this->solde = $solde;
-
-        return $this;
-    }
+    
 
     public function getPartenaire(): ?Partenaire
     {
@@ -165,6 +155,26 @@ class Compte
                 $utilisateur->setCompte(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of solde
+     */ 
+    public function getSolde()
+    {
+        return $this->solde;
+    }
+
+    /**
+     * Set the value of solde
+     *
+     * @return  self
+     */ 
+    public function setSolde($solde)
+    {
+        $this->solde = $solde;
 
         return $this;
     }

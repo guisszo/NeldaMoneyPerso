@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Depot;
 use App\Entity\Compte;
 use App\Entity\Utilisateur;
+use App\Form\CompteType;
+use App\Form\DepotType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,72 +123,51 @@ class UtilisateurController extends AbstractController
     // /*************** Depot par le caissier *****************/
 
     /**
-     * @Route("/depot" , name="depot" , methods={"POST"})
-     * @IsGranted("ROLE_CAISSIER", statuscode=403, message="Vous etes pas autorise a faire cette action")
+     * @Route("/depot", name="add_depot", methods={"POST"})
+      *@IsGranted({"ROLE_CAISSIER"})
      */
-    public function depot(Request $request, 
-    SerializerInterface $serializer, 
-    ValidatorInterface $validator, 
-    EntityManagerInterface $entityManager)
-    {
-        $user = $this->getUser();
-        $values = json_decode($request->getContent());
-
-
-        try {
-            if ($values->montant < 75000) {
-                $exception = [
-                    'sttus' => 500,
-                    'mesge' => 'le montant doit etre supérieur a 75000 FCFA'
-                ];
-                return new JsonResponse($exception, 500);
-            }
-            $repo = $this->getDoctrine()->getRepository(Compte::class);
-            $compte = $repo->findOneBy(['numcompte' => $values->numcompte]);
-            $solde = $compte->getSolde();
-            $compte->setSolde($values->montant + $solde);
-            $entityManager->persist($compte);
-            $entityManager->flush();
-        } catch (ParseException $exception) {
-            $exception = [
-                'status' => 500,
-                'message' => 'Vous devez renseigner tous les champs'
-            ];
-            return new JsonResponse($exception, 500);
-        }
-
-
-        if (isset($compte)) {
-            $depot = new Depot();
-            $depot->setCaissier($user);
-            $depot->setMontant($values->montant);
-            $depot->setMtnAvantDepot($solde);
-            $depot->setCreatedAt(new \DateTime);
-
-
-            $repo = $this->getDoctrine()->getRepository(Compte::class);
-            $Comp = $repo->find($compte);
-            $depot->setCompte($Comp);
+    
+public function Depot(Request $request,EntityManagerInterface $entityManager ): Response
+{
+    $depot = new Depot();
+    $form = $this->createForm(DepotType::class,$depot);
+    $data=$request->request->all();
+    
+    $depot->getMontant();
+    $compte= new Compte();
+    $forme=$this-> createForm(CompteType::class,$compte);
+  
+    $form->submit($data);
+    $forme->submit($data);
+    if($form->isSubmitted() && $forme->isSubmitted()){  
+         $depot->getMontant();
+         $compte->getSolde();
+            if ($depot->getMontant()>=75000) {
+                $repo = $this->getDoctrine()->getRepository(Compte::class);
+                $numcompte = $repo->findOneBy(['numcompte' => $compte->getNumcompte()]);
+            
+                $user=$this->getUser();
+                $depot->setCreatedAt(new \DateTime());
+                $depot->setCompte($numcompte);
+                $depot->setCaissier($user);
+                $depot-> setMtnAvantDepot($numcompte->getSolde());
+            $compte->setSolde($numcompte->getSolde()+$depot->getMontant());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($numcompte);
             $entityManager->persist($depot);
             $entityManager->flush();
-
-            $errors = $validator->validate($depot);
-
-            $errors = $validator->validate($Comp);
-            if (count($errors)) {
-                $errors = $serializer->serialize($errors, 'json');
-                return new Response($errors, 500, [
-                    'Content-Type' => 'application/json'
-                ]);
-            }
-            $entityManager->flush();
-            $data = [
-                'status' => 200,
-                'message' => 'Le depot a éte fait avec succes ' . 'par ' . $user->getNomcomplet()
-            ];
-            return new JsonResponse($data);
+        return new Response('Le dépôt a été effectué',Response::HTTP_CREATED);
         }
+        return new Response('Le montant doit etre superieur ou egal a 75 000',Response::HTTP_CREATED);
     }
+
+  $data = [
+        'status' => 500,
+        'message' => 'Vous devez renseigner le montant et le compte où doit être effectuer le dépot '
+    ];
+    return new Response($data, 500); 
+
+}
 
     /****************************************************************************/
 }

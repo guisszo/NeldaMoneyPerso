@@ -213,28 +213,6 @@ class Compte extends \App\Entity\Compte implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getSolde(): ?int
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSolde', []);
-
-        return parent::getSolde();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSolde(int $solde): \App\Entity\Compte
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSolde', [$solde]);
-
-        return parent::setSolde($solde);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getPartenaire(): ?\App\Entity\Partenaire
     {
 
@@ -340,6 +318,28 @@ class Compte extends \App\Entity\Compte implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeUtilisateur', [$utilisateur]);
 
         return parent::removeUtilisateur($utilisateur);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSolde()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSolde', []);
+
+        return parent::getSolde();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSolde($solde)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSolde', [$solde]);
+
+        return parent::setSolde($solde);
     }
 
 }

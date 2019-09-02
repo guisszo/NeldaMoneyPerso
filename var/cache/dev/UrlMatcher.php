@@ -8,6 +8,7 @@
 return [
     false, // $matchHost
     [ // $staticRoutes
+        '/depot' => [[['_route' => 'depot', '_controller' => 'App\\Controller\\DepotController::index'], null, null, null, false, false, null]],
         '/admin_user' => [[['_route' => 'admin_user_reg', '_controller' => 'App\\Controller\\PartenaireController::reguser'], null, ['POST' => 0], null, false, false, null]],
         '/contrat' => [[['_route' => 'contrat', '_controller' => 'App\\Controller\\PartenaireController::contrat'], null, ['GET' => 0], null, false, false, null]],
         '/register' => [[['_route' => 'app_register', '_controller' => 'App\\Controller\\RegistrationController::register'], null, null, null, false, false, null]],
@@ -22,7 +23,7 @@ return [
         '/api/retrait' => [[['_route' => 'retrait', '_controller' => 'App\\Controller\\TransactionController::retrait'], null, ['POST' => 0], null, false, false, null]],
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],
         '/api/login' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::token'], null, ['POST' => 0], null, false, false, null]],
-        '/api/depot' => [[['_route' => 'depot', '_controller' => 'App\\Controller\\UtilisateurController::depot'], null, ['POST' => 0], null, false, false, null]],
+        '/api/depot' => [[['_route' => 'add_depot', '_controller' => 'App\\Controller\\UtilisateurController::Depot'], null, ['POST' => 0], null, false, false, null]],
         '/api/login_check' => [[['_route' => 'api_login_check'], null, null, null, false, false, null]],
     ],
     [ // $regexpList

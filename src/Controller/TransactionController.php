@@ -94,7 +94,8 @@ class TransactionController extends AbstractController
 
         $data = [
             'status' => 201,
-            'msge' => 'L envoi a ete fait '
+            'msge' => 'L envoi a ete fait ',
+            'transactions'=> $user->getTransactions()
         ];
 
         return new JsonResponse($data, 201);
@@ -142,7 +143,7 @@ class TransactionController extends AbstractController
         }else{
             $value = $repos->findtarif($valeur);
         }
-        ######## calcul de la commission grace à la tarif trouvée
+        ######## calcul de la commission grace au trouvé
 
         $codeGen->setCommissionRetrait($value[0]->getValeur() * 0.2);
 

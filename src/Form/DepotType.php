@@ -13,6 +13,7 @@ class DepotType extends AbstractType
     {
         $builder
             ->add('montant')
+            
         ;
     }
 

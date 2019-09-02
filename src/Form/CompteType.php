@@ -13,9 +13,7 @@ class CompteType extends AbstractType
     {
         $builder
             ->add('numcompte')
-            ->add('solde')
-            ->add('createdAt')
-            ->add('partenaire')
+            
         ;
     }
 
@@ -23,6 +21,7 @@ class CompteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Compte::class,
+            
         ]);
     }
 }

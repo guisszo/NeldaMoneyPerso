@@ -4,6 +4,7 @@
 
 return [
     '_twig_error_test' => [['code', '_format'], ['_controller' => 'twig.controller.preview_error::previewErrorPageAction', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], []],
+    'depot' => [[], ['_controller' => 'App\\Controller\\DepotController::index'], [], [['text', '/depot']], [], []],
     'admin_user_reg' => [[], ['_controller' => 'App\\Controller\\PartenaireController::reguser'], [], [['text', '/admin_user']], [], []],
     'contrat' => [[], ['_controller' => 'App\\Controller\\PartenaireController::contrat'], [], [['text', '/contrat']], [], []],
     'app_register' => [[], ['_controller' => 'App\\Controller\\RegistrationController::register'], [], [['text', '/register']], [], []],
@@ -20,7 +21,7 @@ return [
     'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::token'], [], [['text', '/api/login']], [], []],
-    'depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::depot'], [], [['text', '/api/depot']], [], []],
+    'add_depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::Depot'], [], [['text', '/api/depot']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', 'index', 'index', true], ['text', '/api']], [], []],
     'api_doc' => [['_format'], ['_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], [], [['variable', '.', '[^/]++', '_format', true], ['text', '/api/docs']], [], []],
     'api_jsonld_context' => [['shortName', '_format'], ['_controller' => 'api_platform.jsonld.action.context', '_format' => 'jsonld', '_api_respond' => 'true'], ['shortName' => '.+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '.+', 'shortName', true], ['text', '/api/contexts']], [], []],
