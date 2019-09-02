@@ -346,10 +346,15 @@ class SuperAdminController extends AbstractController
     ) {
         #################recupération de l'ID du Partenaire####################
 
-        $values = json_decode($request->getContent());
+        $values = $request->request->all();
+        $partenaire= new Partenaire();
+        $form= $this->createForm(PartenaireType::class,$partenaire);
+        $form->submit($values);
+
+        
         $repository = $this->getDoctrine()->getRepository(Partenaire::class);
 
-        $partenaire = $repository->findOneBy(['ninea' => $values->ninea]);
+        $partenaire = $repository->findOneBy(['ninea' => $partenaire->getNinea()]);
         $user = $this->getUser();
 
         if ($partenaire) {
