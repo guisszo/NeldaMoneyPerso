@@ -12,8 +12,10 @@ use App\Form\PartenaireType;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\UtilisateurControllerFormType;
+use App\Repository\CompteRepository;
 use App\Repository\ProfilRepository;
 use App\Repository\UtilisateurRepository;
+use FontLib\TrueType\Collection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -436,6 +438,7 @@ class SuperAdminController extends AbstractController
 
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
+            
         ]);
     }
 
@@ -458,5 +461,34 @@ class SuperAdminController extends AbstractController
         ]);
     }
 
+
+     /**
+     * @Route("/selectCompte", name="selectCompte", methods={"GET"})
+     */
+
+     public function selectCompte(CompteRepository $compte,EntityManagerInterface $entityManager,SerializerInterface $serializer){
+        $user=$this->getUser();
+        
+        if($user->getRoles()[0]!="ROLE_PARTENAIRE" && $user->getRoles()[0]!="ROLE_PARTENAIRE_ADMIN"){
+           
+            $data = [
+                'sta' => 401,
+                'mes' => ' vous avez pas acces a ce contenu ' . $user->getNomcomplet()
+            ];
+            return new JsonResponse($data);
+        }
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($user);
+        $cpt = $utilisateur->getPartenaire()->getComptes();
+        $data = $serializer->serialize($cpt, 'json', [
+            'groups' => ['selectCompte']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
+     }
 
 }

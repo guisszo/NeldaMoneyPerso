@@ -19,6 +19,7 @@ return [
         '/api/listePart' => [[['_route' => 'listePart', '_controller' => 'App\\Controller\\SuperAdminController::listePart'], null, ['GET' => 0], null, false, false, null]],
         '/api/listeusers' => [[['_route' => 'listeusers', '_controller' => 'App\\Controller\\SuperAdminController::listerusers'], null, ['GET' => 0], null, false, false, null]],
         '/api/selecProfile' => [[['_route' => 'selecProfile', '_controller' => 'App\\Controller\\SuperAdminController::selectProfile'], null, ['GET' => 0], null, false, false, null]],
+        '/api/selectCompte' => [[['_route' => 'selectCompte', '_controller' => 'App\\Controller\\SuperAdminController::selectCompte'], null, ['GET' => 0], null, false, false, null]],
         '/api/envoi' => [[['_route' => 'envoi', '_controller' => 'App\\Controller\\TransactionController::envoi'], null, ['POST' => 0], null, false, false, null]],
         '/api/retrait' => [[['_route' => 'retrait', '_controller' => 'App\\Controller\\TransactionController::retrait'], null, ['POST' => 0], null, false, false, null]],
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],
