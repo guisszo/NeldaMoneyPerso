@@ -6,6 +6,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     $o = [
         clone (($p = &Registry::$prototypes)['Doctrine\\ORM\\Mapping\\Column'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Column')),
         clone ($p['Symfony\\Component\\Validator\\Constraints\\NotBlank'] ?? Registry::p('Symfony\\Component\\Validator\\Constraints\\NotBlank')),
+        clone ($p['Symfony\\Component\\Validator\\Constraints\\GreaterThanOrEqual'] ?? Registry::p('Symfony\\Component\\Validator\\Constraints\\GreaterThanOrEqual')),
     ],
     null,
     [
@@ -15,17 +16,25 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
             ],
             'message' => [
                 1 => 'Veuillez saisir le montant a deposer',
+                'le montant doit etre superieur ou egal a 75000',
             ],
             'groups' => [
                 1 => [
                     'Default',
                 ],
+                [
+                    'Default',
+                ],
+            ],
+            'value' => [
+                2 => 75000,
             ],
         ],
     ],
     [
         $o[0],
         $o[1],
+        $o[2],
     ],
     []
 );

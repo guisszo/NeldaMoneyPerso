@@ -18,24 +18,26 @@ class Compte
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"selectCompte"})
+     * @Groups({"selectCompte","getcompte"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
-     * @Groups({"selectCompte"})
+     * @Groups({"selectCompte","getcompte"})
      */
     private $numcompte;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"selectCompte","getcompte"})
      */
     private $solde;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="comptes")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"getcompte"})
      */
     private $partenaire;
 

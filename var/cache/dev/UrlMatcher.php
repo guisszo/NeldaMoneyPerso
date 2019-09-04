@@ -26,6 +26,7 @@ return [
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],
         '/api/login' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::token'], null, ['POST' => 0], null, false, false, null]],
         '/api/depot' => [[['_route' => 'add_depot', '_controller' => 'App\\Controller\\UtilisateurController::Depot'], null, ['POST' => 0], null, false, false, null]],
+        '/api/findCompte' => [[['_route' => 'findCompte', '_controller' => 'App\\Controller\\UtilisateurController::getCompt'], null, ['POST' => 0], null, false, false, null]],
         '/api/login_check' => [[['_route' => 'api_login_check'], null, null, null, false, false, null]],
     ],
     [ // $regexpList

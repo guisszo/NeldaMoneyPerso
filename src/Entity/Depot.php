@@ -29,6 +29,7 @@ class Depot
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank(message="Veuillez saisir le montant a deposer")
+     * @Assert\GreaterThanOrEqual(75000,message="le montant doit etre superieur ou egal a 75000")
      */
     private $montant;
 

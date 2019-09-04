@@ -28,14 +28,14 @@ class Partenaire
     /**
      * @ORM\Column(name="raisonSociale",type="string", length=255, unique=true)
      * @Assert\NotBlank(message="Veuillez saisir le raison social")
-     * @Groups({"liste"})
+     * @Groups({"liste","getcompte"})
      */
     private $raisonSociale;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank(message="Veuillez saisir le niena")
-     * @Groups({"liste"})
+     * @Groups({"liste","getcompte"})
      */
     private $ninea;
 
