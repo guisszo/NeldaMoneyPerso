@@ -19,22 +19,37 @@ class UtilisateurRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateur::class);
     }
 
-    // /**
-    //  * @return Utilisateur[] Returns an array of Utilisateur objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Utilisateur[] Returns an array of Utilisateur objects
+     */
+    
+    public function findByRoles()
+    {
+        
+        return $this->createQueryBuilder('u')
+            ->Where('u.partenaire Is Null')
+            ->andWhere('u.id !=1')
+            
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
+    /**
+     * @return Utilisateur[] Returns an array of Utilisateur objects
+     */
+    
+    public function findPartenaire()
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('u.roles LIKE :roles')
+            ->setParameter('roles', '%"'."ROLE_PARTENAIRE".'"%')
+            
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Utilisateur

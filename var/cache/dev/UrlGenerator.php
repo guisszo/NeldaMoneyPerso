@@ -16,6 +16,7 @@ return [
     'listePartblock' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePartblock'], [], [['text', '/api/listePartblock']], [], []],
     'listePart' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePart'], [], [['text', '/api/listePart']], [], []],
     'listeusers' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listerusers'], [], [['text', '/api/listeusers']], [], []],
+    'listePartenaires' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePartenaires'], [], [['text', '/api/listePartenaires']], [], []],
     'selecProfile' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectProfile'], [], [['text', '/api/selecProfile']], [], []],
     'selectCompte' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectCompte'], [], [['text', '/api/selectCompte']], [], []],
     'envoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::envoi'], [], [['text', '/api/envoi']], [], []],

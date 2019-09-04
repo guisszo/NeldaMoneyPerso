@@ -426,9 +426,33 @@ class SuperAdminController extends AbstractController
      * @Route("/listeusers", name="listeusers", methods={"GET"})
      */
 
-    public function listerusers(UtilisateurRepository $util,SerializerInterface $serializer){
-        
-        $utilisateurs = $util->findAll();
+    public function listerusers(UtilisateurRepository $util,EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findByRoles();
+          
+
+        $data = $serializer->serialize($utilisateurs, 'json', [
+            'groups' => ['listeutile']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+            
+        ]);
+    }
+
+    /**
+     * @Route("/listePartenaires", name="listePartenaires", methods={"GET"})
+     */
+
+    public function listePartenaires(UtilisateurRepository $util,EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findPartenaire();
           
 
         $data = $serializer->serialize($utilisateurs, 'json', [
@@ -466,7 +490,8 @@ class SuperAdminController extends AbstractController
      * @Route("/selectCompte", name="selectCompte", methods={"GET"})
      */
 
-     public function selectCompte(CompteRepository $compte,EntityManagerInterface $entityManager,SerializerInterface $serializer){
+     public function selectCompte(CompteRepository $compte,EntityManagerInterface $entityManager,
+     SerializerInterface $serializer){
         $user=$this->getUser();
         
         if($user->getRoles()[0]!="ROLE_PARTENAIRE" && $user->getRoles()[0]!="ROLE_PARTENAIRE_ADMIN"){
