@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TransactionRepository")
@@ -18,41 +19,49 @@ class Transaction
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="transactions")
+     * @Groups({"transactionEnv"})
      */
     private $userEnvoi;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="transactions")
+     * @Groups({"transactionEnv"})
      */
     private $userRetrait;
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Groups({"transactionEnv"})
      */
     private $nomcompletExpediteur;
 
     /**
      * @ORM\Column(type="string", length=15)
+     * @Groups({"transactionEnv"})
      */
     private $telExpediteur;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     * @Groups({"transactionEnv"})
      */
     private $nomcompletRecepteur;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
+     * @Groups({"transactionEnv"})
      */
     private $telRecepteur;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups({"transactionEnv"})
      */
     private $codeTransaction;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"transactionEnv"})
      */
     private $montant;
 

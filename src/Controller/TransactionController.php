@@ -8,6 +8,7 @@ use App\Form\TransactionType;
 use App\Repository\TarifsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -92,12 +93,13 @@ class TransactionController extends AbstractController
         $entityManager->persist($transaction);
         $entityManager->flush();
 
-        $data = [
-            'status' => 201,
-            'msge' => 'L envoi a ete fait '
-        ];
+        $data = $serializer->serialize($transaction, 'json', [
+            'groups' => ['transactionEnv']
+        ]);
 
-        return new JsonResponse($data, 201);
+        return new Response($data, 201,[
+            'Content-Type' => 'application/json'
+        ]);
     }
     #####################################################################################
     ######################## creation de la fonction de reception #######################

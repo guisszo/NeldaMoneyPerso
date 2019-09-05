@@ -444,6 +444,30 @@ class SuperAdminController extends AbstractController
         ]);
     }
 
+     /**
+     * @Route("/Partusers", name="PartUsers", methods={"GET"})
+     */
+
+    public function PartUtil(EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+        $user = $this->getUser();
+        $utils= $user->getPartenaire();
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findBy(['partenaire'=>$utils]);
+          
+
+        $data = $serializer->serialize($utilisateurs, 'json', [
+            'groups' => ['listeutile']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+            
+        ]);
+    }
+
     /**
      * @Route("/listePartenaires", name="listePartenaires", methods={"GET"})
      */
