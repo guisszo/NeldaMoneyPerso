@@ -426,7 +426,7 @@ class SuperAdminController extends AbstractController
      * @Route("/listeusers", name="listeusers", methods={"GET"})
      */
 
-    public function listerusers(UtilisateurRepository $util,EntityManagerInterface $entityManager,
+    public function listerusers(EntityManagerInterface $entityManager,
     SerializerInterface $serializer){
 
         $entityManager = $this->getDoctrine()->getManager();

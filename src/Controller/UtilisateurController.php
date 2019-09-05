@@ -130,62 +130,48 @@ class UtilisateurController extends AbstractController
 
     public function Depot(Request $request, SerializerInterface $serializer,ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
     {
-        $user=$this->getUser();
-       $values = json_decode($request->getContent());
-           // $values = $request->request->all();
-       //     $depot = new Depot();
-        //    $forme = $this->createForm(DepotType::class,$depot);
-       // $forme->submit($values);
-
-         //   $depot->getMontant();
-               
-
-                  //  $compte = new Compte();
+                    $user=$this->getUser();
+                    $values = json_decode($request->getContent());
                     $repo = $this->getDoctrine()->getRepository(Compte::class);
                     $compte = $repo->findOneBy(['numcompte' => $values->numcompte]);
-    
+                    if ($values->montant < 75000) {
+                       return new Response ('le montant doit etre superieur ou egale a 75000');
+                    }
+                    
                     $solde = $compte->getSolde();
                     $compte->setSolde($values->montant+ $solde);
                     $entityManager->persist($compte);
                     $entityManager->flush();
-                    
-                    if (isset($compte)) {
-                        $depot = new Depot();
-                        $depot->setCaissier($user);
-                        $depot->setMontant($values->montant);
-                        $depot->setMtnAvantDepot($solde);
-                        $depot->setCreatedAt(new \DateTime);
-            
-            
-                        $repo = $this->getDoctrine()->getRepository(Compte::class);
-                        $Comp = $repo->find($compte);
-                        $depot->setCompte($Comp);
-                        $entityManager->persist($depot);
-                        $entityManager->flush();
-            
-            
-                        $errors = $validator->validate($Comp);
-                        if (count($errors)) {
-                            $errors = $serializer->serialize($errors, 'json');
-                            return new Response($errors, 500, [
-                                'Content-Type' => 'application/json'
-                            ]);
-                        }
-                        $entityManager->flush();
-                        $data = [
-                            'status' => 200,
-                            'message' => 'Le depot a éte fait avec succes ' . 'par ' . $user->getNomcomplet()
-                        ];
-                        return new JsonResponse($data);
-                    }
-             
-                $data = [
-                    'sttus' => 401,
-                    'mesge' => 'le montant doit etre supérieur a 75000 FCFA'
-                ];
-                return new JsonResponse($data, 401);
-            
-        
+                
+                        if ($compte) {
+                            $depot = new Depot();
+                            $depot->setCaissier($user);
+                            $depot->setMontant($values->montant);
+                            $depot->setMtnAvantDepot($solde);
+                            $depot->setCreatedAt(new \DateTime);
+                
+                
+                            $repo = $this->getDoctrine()->getRepository(Compte::class);
+                            $Comp = $repo->find($compte);
+                            $depot->setCompte($Comp);
+                            $entityManager->persist($depot);
+                            $entityManager->flush();
+                
+                
+                            $errors = $validator->validate($Comp);
+                            if (count($errors)) {
+                                $errors = $serializer->serialize($errors, 'json');
+                                return new Response($errors, 500, [
+                                    'Content-Type' => 'application/json'
+                                ]);
+                            }
+                            $entityManager->flush();
+                            $data = [
+                                'status' => 200,
+                                'message' => 'Le depot a éte fait avec succes ' . 'par ' . $user->getNomcomplet()
+                            ];
+                            return new JsonResponse($data);
+                        }     
 
             
        
