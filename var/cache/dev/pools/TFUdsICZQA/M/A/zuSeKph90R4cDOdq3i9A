@@ -41,6 +41,8 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
             'groups' => [
                 3 => [
                     'listeutile',
+                    'mkCptList',
+                    'transactionEnv',
                 ],
             ],
         ],

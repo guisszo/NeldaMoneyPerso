@@ -28,14 +28,14 @@ class Partenaire
     /**
      * @ORM\Column(name="raisonSociale",type="string", length=255, unique=true)
      * @Assert\NotBlank(message="Veuillez saisir le raison social")
-     * @Groups({"liste","getcompte"})
+     * @Groups({"liste","getcompte","mkCptList"})
      */
     private $raisonSociale;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank(message="Veuillez saisir le niena")
-     * @Groups({"liste","getcompte"})
+     * @Groups({"liste","getcompte","mkCptList"})
      */
     private $ninea;
 
@@ -46,6 +46,7 @@ class Partenaire
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Utilisateur", mappedBy="partenaire")
+     * @Groups({"mkCptList"})
      */
     private $utilisateurs;
 

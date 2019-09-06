@@ -22,6 +22,7 @@ return [
         '/api/listePartenaires' => [[['_route' => 'listePartenaires', '_controller' => 'App\\Controller\\SuperAdminController::listePartenaires'], null, ['GET' => 0], null, false, false, null]],
         '/api/selecProfile' => [[['_route' => 'selecProfile', '_controller' => 'App\\Controller\\SuperAdminController::selectProfile'], null, ['GET' => 0], null, false, false, null]],
         '/api/selectCompte' => [[['_route' => 'selectCompte', '_controller' => 'App\\Controller\\SuperAdminController::selectCompte'], null, ['GET' => 0], null, false, false, null]],
+        '/api/findNinea' => [[['_route' => 'findNinea', '_controller' => 'App\\Controller\\SuperAdminController::findNinea'], null, ['POST' => 0], null, false, false, null]],
         '/api/envoi' => [[['_route' => 'envoi', '_controller' => 'App\\Controller\\TransactionController::envoi'], null, ['POST' => 0], null, false, false, null]],
         '/api/retrait' => [[['_route' => 'retrait', '_controller' => 'App\\Controller\\TransactionController::retrait'], null, ['POST' => 0], null, false, false, null]],
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],

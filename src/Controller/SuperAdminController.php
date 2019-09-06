@@ -305,7 +305,6 @@ class SuperAdminController extends AbstractController
 
     /**
      * @Route("/modif_partuser/{id}" , name="modif_partuser" , methods={"PUT"})
-     * @IsGranted("ROLE_PARTENAIRE")
      */
     public function updatePartuser($id)
     {
@@ -514,7 +513,7 @@ class SuperAdminController extends AbstractController
      * @Route("/selectCompte", name="selectCompte", methods={"GET"})
      */
 
-     public function selectCompte(CompteRepository $compte,EntityManagerInterface $entityManager,
+     public function selectCompte(EntityManagerInterface $entityManager,
      SerializerInterface $serializer){
         $user=$this->getUser();
         
@@ -538,6 +537,25 @@ class SuperAdminController extends AbstractController
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);
+     } /**
+     * @Route("/findNinea", name="findNinea", methods={"POST"})
+     */
+
+     public function findNinea(Request $request,EntityManagerInterface $entityManager,
+     SerializerInterface $serializer){
+        $values = json_decode($request->getContent());
+        $repo = $this->getDoctrine()->getRepository(Partenaire::class);
+        $part = $repo->findOneBy(['ninea' => $values->ninea]);
+        $data = $serializer->serialize($part, 'json', [
+            'groups' => ['mkCptList']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
      }
+
+
 
 }

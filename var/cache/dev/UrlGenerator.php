@@ -20,6 +20,7 @@ return [
     'listePartenaires' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::listePartenaires'], [], [['text', '/api/listePartenaires']], [], []],
     'selecProfile' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectProfile'], [], [['text', '/api/selecProfile']], [], []],
     'selectCompte' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectCompte'], [], [['text', '/api/selectCompte']], [], []],
+    'findNinea' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::findNinea'], [], [['text', '/api/findNinea']], [], []],
     'envoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::envoi'], [], [['text', '/api/envoi']], [], []],
     'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],

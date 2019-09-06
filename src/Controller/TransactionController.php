@@ -50,6 +50,14 @@ class TransactionController extends AbstractController
         $transaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $transaction);
         $form->submit($values);
+       if($user->getCompte()->getSolde() < $form->get('montant')->getData()){
+        $data = [
+            'status' => 405,
+            'msge' => 'Votre solde ne vous permet pas de faire d\'envoi'
+        ];
+
+        return new JsonResponse($data, 405);
+       }
 
         $transaction->setUserEnvoi($user);
         $transaction->setCodeTransaction($compte_rand);
@@ -128,6 +136,14 @@ class TransactionController extends AbstractController
 
         if (!$codeGen) {
             throw new NotFoundHttpException('ce conde n\'existe pas ');
+        }
+        if($codeGen->getStatut()==='retire'){
+            $data = [
+                'status' => 401,
+                'msge' => 'Le retrait a deja été effectué  pour ce code'
+            ];
+    
+            return new JsonResponse($data, 401);
         }
         $codeGen->setUserRetrait($user);
         $codeGen->setRecevedAt(new \DateTime);

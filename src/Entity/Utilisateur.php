@@ -30,7 +30,7 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"listeutile"})
+     * @Groups({"listeutile","mkCptList","transactionEnv"})
      */
     private $username;
 
@@ -54,7 +54,7 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"listeutile"})
+     * @Groups({"listeutile","mkCptList","transactionEnv"})
      */
     private $nomcomplet;
 
@@ -78,13 +78,13 @@ class Utilisateur implements UserInterface
      *     match=true,
      *     message="Votre numero ne doit pas contenir de lettre"
      * )
-     * @Groups({"listeutile"})
+     * @Groups({"listeutile","mkCptList","transactionEnv"})
      */
     private $tel;
 
     /**
      * @ORM\Column(type="string", length=125)
-     * @Groups({"listeutile"})
+     * @Groups({"listeutile","mkCptList","transactionEnv"})
      */
     private $email;
 
