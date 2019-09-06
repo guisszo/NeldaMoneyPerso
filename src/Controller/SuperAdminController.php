@@ -537,7 +537,9 @@ class SuperAdminController extends AbstractController
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);
-     } /**
+     } 
+     
+     /**
      * @Route("/findNinea", name="findNinea", methods={"POST"})
      */
 

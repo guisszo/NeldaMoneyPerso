@@ -31,42 +31,43 @@ class Transaction
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $nomcompletExpediteur;
 
     /**
      * @ORM\Column(type="string", length=15)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $telExpediteur;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $nomcompletRecepteur;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $telRecepteur;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $codeTransaction;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $montant;
 
     /**
      * @ORM\Column(type="string", length=14, nullable=true)
+     * Groups({"CodeTransaction"})
      */
     private $CNIrecepteur;
 

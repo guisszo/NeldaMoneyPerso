@@ -6,6 +6,7 @@ use App\Form\RetraitType;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
 use App\Repository\TarifsRepository;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ class TransactionController extends AbstractController
         $form->submit($values);
        if($user->getCompte()->getSolde() < $form->get('montant')->getData()){
         $data = [
-            'status' => 405,
+            'statusMsg' => 405,
             'msge' => 'Votre solde ne vous permet pas de faire d\'envoi'
         ];
 
@@ -191,5 +192,34 @@ class TransactionController extends AbstractController
         ];
 
         return new JsonResponse($data, 201);
+    }
+
+    ############# recherche du code de la transaction ###################"
+
+    /**
+     * @Route("/findCode", name="findCode", methods={"POST"})
+     */
+
+    public function findCode(TransactionRepository $transaction, Request $request,EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+        $data = $request->request->all();
+
+        $transaction = new Transaction();
+        $forme = $this->createForm(RetraitType::class, $transaction);
+
+        $forme->submit($data);
+        if ($forme->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $Code = $entityManager->getRepository(Transaction::class)->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
+            $data = $serializer->serialize($Code, 'json', [
+                'groups' => ['CodeTransaction']
+            ]);
+            var_dump($data);die();
+
+
+            return new Response($data,200,[
+                'Content-Type' => 'application/json'
+            ]);
+        }
     }
 }
