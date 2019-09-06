@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class TransactionController extends AbstractController
 {
-    
+
     #####################################################################################
     ########################### creation de la fonction d'envoi #########################
 
@@ -51,14 +51,14 @@ class TransactionController extends AbstractController
         $transaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $transaction);
         $form->submit($values);
-       if($user->getCompte()->getSolde() < $form->get('montant')->getData()){
-        $data = [
-            'statusMsg' => 405,
-            'msge' => 'Votre solde ne vous permet pas de faire d\'envoi'
-        ];
+        if ($user->getCompte()->getSolde() < $form->get('montant')->getData()) {
+            $data = [
+                'statusMsg' => 405,
+                'msge' => 'Votre solde ne vous permet pas de faire d\'envoi'
+            ];
 
-        return new JsonResponse($data, 405);
-       }
+            return new JsonResponse($data, 405);
+        }
 
         $transaction->setUserEnvoi($user);
         $transaction->setCodeTransaction($compte_rand);
@@ -69,13 +69,13 @@ class TransactionController extends AbstractController
 
         ############### et on donne ce montant à la fonction findtarif pour trouver
         ############### l'intervalle où se trouve les frais d'envoi
-        
-         if(2000001 <= $valeur && $valeur< 3000000){
-            $value= $valeur *0.2;
-        }else{
+
+        if (2000001 <= $valeur && $valeur < 3000000) {
+            $value = $valeur * 0.2;
+        } else {
             $value = $repo->findtarif($valeur);
         }
-       
+
         ######## calcul des commisions avec le tarif trouvé
 
         $transaction->setCommissionEnv($value[0]->getValeur() * 0.1);
@@ -106,7 +106,7 @@ class TransactionController extends AbstractController
             'groups' => ['transactionEnv']
         ]);
 
-        return new Response($data, 201,[
+        return new Response($data, 201, [
             'Content-Type' => 'application/json'
         ]);
     }
@@ -135,15 +135,15 @@ class TransactionController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(Transaction::class);
         $codeGen = $repo->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
 
-        if (!$codeGen) {
-            throw new NotFoundHttpException('ce conde n\'existe pas ');
-        }
-        if($codeGen->getStatut()==='retire'){
+        // if (!$codeGen) {
+        //     throw new NotFoundHttpException('ce code n\'existe pas ');
+        // }
+        if ($codeGen->getStatut() === 'retire') {
             $data = [
                 'status' => 401,
                 'msge' => 'Le retrait a deja été effectué  pour ce code'
             ];
-    
+
             return new JsonResponse($data, 401);
         }
         $codeGen->setUserRetrait($user);
@@ -155,10 +155,10 @@ class TransactionController extends AbstractController
 
         ############### et on donne ce montant à la fonction findtarif pour trouver
         ############### l'intervalle où se trouve les frais d'envoi
-       
-        if(2000001 <= $valeur && $valeur< 3000000){
-            $value= $valeur *0.2;
-        }else{
+
+        if (2000001 <= $valeur && $valeur < 3000000) {
+            $value = $valeur * 0.2;
+        } else {
             $value = $repos->findtarif($valeur);
         }
         ######## calcul de la commission grace au trouvée
@@ -168,8 +168,8 @@ class TransactionController extends AbstractController
 
         $cpt = $user->getCompte(); ########### recupération du numero de compte
         $modsolde = $user->getCompte()->getSolde() +
-        $codeGen->getMontant() +
-        $codeGen->getCommissionRetrait();
+            $codeGen->getMontant() +
+            $codeGen->getCommissionRetrait();
         $cpt->setSolde($modsolde);
 
 
@@ -193,31 +193,41 @@ class TransactionController extends AbstractController
 
         return new JsonResponse($data, 201);
     }
-
-    ############# recherche du code de la transaction ###################"
+    ######################################################################
+    ############# recherche du code de la transaction ####################
 
     /**
      * @Route("/findCode", name="findCode", methods={"POST"})
      */
 
-    public function findCode(TransactionRepository $transaction, Request $request,EntityManagerInterface $entityManager,
-    SerializerInterface $serializer){
+    public function findCode(
+        TransactionRepository $transaction,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer
+    ) {
         $data = $request->request->all();
 
         $transaction = new Transaction();
         $forme = $this->createForm(RetraitType::class, $transaction);
-
+        
         $forme->submit($data);
         if ($forme->isSubmitted()) {
             $entityManager = $this->getDoctrine()->getManager();
             $Code = $entityManager->getRepository(Transaction::class)->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
+            if (!$Code) {
+                $data = [
+                    'status' => 405,
+                    'msge' => 'Ce code n\'existe pas '
+                ];
+        
+                return new JsonResponse($data, 405);
+            }
             $data = $serializer->serialize($Code, 'json', [
                 'groups' => ['CodeTransaction']
             ]);
-            var_dump($data);die();
 
-
-            return new Response($data,200,[
+            return new Response($data, 200, [
                 'Content-Type' => 'application/json'
             ]);
         }

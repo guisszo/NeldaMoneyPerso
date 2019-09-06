@@ -25,7 +25,7 @@ class Transaction
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="transactions")
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $userRetrait;
 
@@ -49,13 +49,13 @@ class Transaction
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv"})
      */
     private $telRecepteur;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv"})
      */
     private $codeTransaction;
 
