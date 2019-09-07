@@ -53,11 +53,11 @@ class TransactionController extends AbstractController
         $form->submit($values);
         if ($user->getCompte()->getSolde() < $form->get('montant')->getData()) {
             $data = [
-                'statusMsg' => 405,
-                'msge' => 'Votre solde ne vous permet pas de faire d\'envoi'
+                'status' => 208,
+                'message' => 'Votre solde ne vous permet pas de faire d\'envoi'
             ];
 
-            return new JsonResponse($data, 405);
+            return new JsonResponse($data, 208);
         }
 
         $transaction->setUserEnvoi($user);
@@ -138,14 +138,7 @@ class TransactionController extends AbstractController
         // if (!$codeGen) {
         //     throw new NotFoundHttpException('ce code n\'existe pas ');
         // }
-        if ($codeGen->getStatut() === 'retire') {
-            $data = [
-                'status' => 401,
-                'msge' => 'Le retrait a deja été effectué  pour ce code'
-            ];
-
-            return new JsonResponse($data, 401);
-        }
+       
         $codeGen->setUserRetrait($user);
         $codeGen->setRecevedAt(new \DateTime);
         $codeGen->setCNIrecepteur($values['CNIrecepteur']);
@@ -188,7 +181,7 @@ class TransactionController extends AbstractController
 
         $data = [
             'status' => 201,
-            'msge' => 'Le retrait a ete fait '
+            'message' => 'Le retrait a ete fait '
         ];
 
         return new JsonResponse($data, 201);
@@ -206,6 +199,7 @@ class TransactionController extends AbstractController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer
     ) {
+        $user=$this->getUser();
         $data = $request->request->all();
 
         $transaction = new Transaction();
@@ -214,16 +208,28 @@ class TransactionController extends AbstractController
         $forme->submit($data);
         if ($forme->isSubmitted()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $Code = $entityManager->getRepository(Transaction::class)->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
+            $Code = $entityManager->getRepository(Transaction::class)
+            ->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
+           
             if (!$Code) {
                 $data = [
-                    'status' => 405,
-                    'msge' => 'Ce code n\'existe pas '
+                    'status' => 208,
+                    'message' => 'Ce code n\'existe pas '
                 ];
         
-                return new JsonResponse($data, 405);
+                return new JsonResponse($data, 208);
+            }
+/*             var_dump($Code->getStatut());die();
+ */            if ($Code->getStatut() === 'retire') {
+                $data = [
+                    'status' => 209,
+                    'message' => 'Le retrait a deja été effectué  pour ce code'
+                ];
+    
+                return new JsonResponse($data, 209);
             }
             $data = $serializer->serialize($Code, 'json', [
+                'userRetrait' =>  $Code->setUserRetrait($user),
                 'groups' => ['CodeTransaction']
             ]);
 
@@ -231,5 +237,6 @@ class TransactionController extends AbstractController
                 'Content-Type' => 'application/json'
             ]);
         }
+
     }
 }

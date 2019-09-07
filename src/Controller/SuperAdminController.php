@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Controller;
-
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use App\Entity\Compte;
 use App\Entity\Profil;
 use App\Entity\Partenaire;
@@ -12,10 +9,8 @@ use App\Form\PartenaireType;
 use App\Repository\PartenaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\UtilisateurControllerFormType;
-use App\Repository\CompteRepository;
 use App\Repository\ProfilRepository;
 use App\Repository\UtilisateurRepository;
-use FontLib\TrueType\Collection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,12 +26,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class SuperAdminController extends AbstractController
 {
-
+    
     private $encoder;
-
+    private $statut;
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
+        $this->statut ='statut';
     }
 
 
@@ -128,8 +124,8 @@ class SuperAdminController extends AbstractController
 
 
                 $data = [
-                    'status' => 201,
-                    'msge' => 'Le partenaire a été créé'
+                    $this->statut => 201,
+                    'message' => 'Le partenaire a été créé'
                 ];
 
                 return new JsonResponse($data, 201);
@@ -172,11 +168,11 @@ class SuperAdminController extends AbstractController
             ) {
 
                 $data = [
-                    'sta' => 401,
-                    'msge3' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    $this->statut => 403,
+                    'message' => 'acces refuse, vous etes pas autorise a faire cette action'
                 ];
 
-                return new JsonResponse($data, 401);
+                return new JsonResponse($data, 403);
             }
 
             $utilisateur->setRoles(['ROLE_ADMIN']);
@@ -188,11 +184,11 @@ class SuperAdminController extends AbstractController
             ) {
 
                 $data = [
-                    'sta' => 401,
-                    'msge4' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    $this->statut => 403,
+                    'message' => 'acces refuse, vous etes pas autorise a faire cette action'
                 ];
 
-                return new JsonResponse($data, 401);
+                return new JsonResponse($data, 403);
             }
             $utilisateur->setRoles(['ROLE_CAISSIER']);
         } elseif ($profils->getLibelle() == "partenaire_admin") {
@@ -203,11 +199,11 @@ class SuperAdminController extends AbstractController
             ) {
 
                 $data = [
-                    'statut' => 401,
-                    'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    $this->statut => 403,
+                    'message' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
                 ];
 
-                return new JsonResponse($data, 401);
+                return new JsonResponse($data, 403);
             }
             $users = $this->getUser()->getPartenaire();
 
@@ -221,11 +217,11 @@ class SuperAdminController extends AbstractController
             ) {
 
                 $data = [
-                    'statut' => 401,
-                    'msge1' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    $this->statut => 403,
+                    'message' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
                 ];
 
-                return new JsonResponse($data, 401);
+                return new JsonResponse($data, 403);
             }
             $users = $this->getUser()->getPartenaire();
 
@@ -256,8 +252,8 @@ class SuperAdminController extends AbstractController
 
 
         $data = [
-            'stts' => 201,
-            'me' => 'L\'utilisateur a été créé'
+            $this->statut => 201,
+            'message' => 'L\'utilisateur a été créé'
         ];
 
         return new JsonResponse($data, 201);
@@ -297,25 +293,21 @@ class SuperAdminController extends AbstractController
         $entityManager->flush();
 
         $data = [
-            'sta' => 200,
-            'mes' => 'Le statut a ete bien mis a jour'
+            $this->statut => 200,
+            'message' => 'Le statut a ete bien mis a jour'
         ];
         return new JsonResponse($data);
     }
 
     /**
-     * @Route("/modif_partuser/{id}" , name="modif_partuser" , methods={"PUT"})
+     * @Route("/modif_partuser/{id}" , name="modif_partuser" , methods={"GET"})
      */
     public function updatePartuser($id)
     {
         $constante = 'actif';
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
-        if (!$utilisateur) {
-            throw $this->createNotFoundException(
-                'pas d\'utilisateur trouve pour cet id ' . $id
-            );
-        }
+       
 
         if ($utilisateur->getStatut() == "actif") {
 
@@ -329,8 +321,8 @@ class SuperAdminController extends AbstractController
         $entityManager->flush();
 
         $data = [
-            'sta' => 200,
-            'mes' => 'Le statut a ete bien mis a jour'
+            $this->statut => 200,
+            'message' => 'Le statut a ete bien mis a jour'
         ];
         return new JsonResponse($data);
     }
@@ -372,13 +364,13 @@ class SuperAdminController extends AbstractController
             $entityManager->persist($compte);
             $entityManager->flush();
             $data = [
-                'sta' => 201,
+                $this->statut => 201,
                 'mes' => 'Le nouveau compte a ete cree par ' . $user->getNomcomplet()
             ];
             return new JsonResponse($data);
         } else {
             $data = [
-                'st' => 500,
+                $this->statut => 500,
                 'mes' => 'ce partenaire n\'existe pas'
             ];
             return new JsonResponse($data);
@@ -450,21 +442,19 @@ class SuperAdminController extends AbstractController
     public function PartUtil(EntityManagerInterface $entityManager,
     SerializerInterface $serializer){
         $user = $this->getUser();
-        $utils= $user->getPartenaire();
-        
         $entityManager = $this->getDoctrine()->getManager();
-        $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findBy(['partenaire'=>$utils]);
-          
-
+        $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findUsers($user);
+            
         $data = $serializer->serialize($utilisateurs, 'json', [
             'groups' => ['listeutile']
         ]);
       
-
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
             
         ]);
+ 
+
     }
 
     /**
@@ -520,7 +510,7 @@ class SuperAdminController extends AbstractController
         if($user->getRoles()[0]!="ROLE_PARTENAIRE" && $user->getRoles()[0]!="ROLE_PARTENAIRE_ADMIN"){
            
             $data = [
-                'sta' => 401,
+                $this->statut => 403,
                 'mes' => ' vous avez pas acces a ce contenu ' . $user->getNomcomplet()
             ];
             return new JsonResponse($data);
@@ -558,6 +548,23 @@ class SuperAdminController extends AbstractController
         ]);
      }
 
+  /**
+     * @Route("/onepart/{id}", name="onepart", methods={"GET"})
+     * IsGranted("ROLE_SUPER_ADMIN")
+     */
+    public function onepart(UtilisateurRepository $parte,SerializerInterface $serializer,$id=null){
+        
+        $partenair = $parte->findOneBy(['id'=>$id]);
+          
 
+        $data = $serializer->serialize($partenair, 'json', [
+            'groups' => ['listeutile']
+        ]);
+      
+
+        return new Response($data, 200, [
+            'Content-Type' => 'application/json'
+        ]);
+    }
 
 }

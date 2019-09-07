@@ -25,7 +25,7 @@ class Transaction
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="transactions")
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"CodeTransaction"})
      */
     private $userRetrait;
 

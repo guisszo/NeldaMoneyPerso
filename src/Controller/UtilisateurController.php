@@ -26,10 +26,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UtilisateurController extends AbstractController
 {
     private $encoder;
-
+    private $status;
+    private $message;
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
+        $this->status = 'status';
+        $this->message = 'message';
     }
 
     /************************ Authentification ************************/
@@ -57,20 +60,20 @@ class UtilisateurController extends AbstractController
         if (!$user) {
 
             $data = [
-                'sta' => 401,
-                'me' => 'cette utilisateur n existe pas'
+                $this->status => 208,
+                'message' => 'cette utilisateur n existe pas'
             ];
-            return new JsonResponse($data);
+            return new JsonResponse($data,208);
         }
 
 
         $isValid = $this->encoder->isPasswordValid($user, $mdp);
         if (!$isValid) {
             $data = [
-                'sta' => 400,
-                'mes' => 'Votre mot de pass est incorrect'
+                $this->status => 209,
+                $this->message => 'Votre mot de pass est incorrect'
             ];
-            return new JsonResponse($data);
+            return new JsonResponse($data,209);
         }
 
 
@@ -82,10 +85,10 @@ class UtilisateurController extends AbstractController
         ) {
 
             $data = [
-                'sta' => 401,
-                'mes' => 'desole ' . $user->getNomcomplet() . ', vous avez pas acces aux services car ' . $user->getPartenaire()->getRaisonSociale() . 'est bloque'
+                $this->status => 208,
+                $this->message => 'desole ' . $user->getNomcomplet() . ', vous avez pas acces aux services car ' . $user->getPartenaire()->getRaisonSociale() . 'est bloque'
             ];
-            return new JsonResponse($data);
+            return new JsonResponse($data,208);
         }
 
 
@@ -96,20 +99,20 @@ class UtilisateurController extends AbstractController
             $user->getStatut() === "bloque"
         ) {
             $data = [
-                'sta' => 401,
-                'mes2' => 'acces refuse ' . $user->getNomcomplet() . ', vous etes bloque par ' . $user->getPartenaire()->getRaisonSociale()
+                $this->status => 208,
+                $this->message => 'acces refuse ' . $user->getNomcomplet() . ', vous etes bloque par ' . $user->getPartenaire()->getRaisonSociale()
             ];
-            return new JsonResponse($data);
+            return new JsonResponse($data,208);
         }
 
         if ($user->getStatut() === "bloque") {
 
 
             $data = [
-                'sta' => 401,
-                'mes' => 'Desole ' . $user->getNomcomplet() . ', vous etes bloque, contacter l\' admin'
+                $this->status => 208,
+                $this->message => 'Desole ' . $user->getNomcomplet() . ', vous etes bloque, contacter l\' admin'
             ];
-            return new JsonResponse($data);
+            return new JsonResponse($data,208);
         }
 
         $token = $JWTEncoder->encode([
@@ -135,7 +138,11 @@ class UtilisateurController extends AbstractController
                     $repo = $this->getDoctrine()->getRepository(Compte::class);
                     $compte = $repo->findOneBy(['numcompte' => $values->numcompte]);
                     if ($values->montant < 75000) {
-                       return new Response ('le montant doit etre superieur ou egale a 75000');
+                        $data = [
+                            $this->status => 208,
+                            $this->message => 'le montant doit etre superieur ou egale a 75000'
+                        ];
+                        return new JsonResponse($data,208);
                     }
                     
                     $solde = $compte->getSolde();
@@ -167,10 +174,10 @@ class UtilisateurController extends AbstractController
                             }
                             $entityManager->flush();
                             $data = [
-                                'status' => 200,
-                                'message' => 'Le depot a éte fait avec succes ' . 'par ' . $user->getNomcomplet()
+                                $this->status => 200,
+                                $this->message => 'Le depot a éte fait avec succes ' . 'par ' . $depot->getCompte()->getPartenaire()->getRaisonSociale()
                             ];
-                            return new JsonResponse($data);
+                            return new JsonResponse($data,200);
                         }     
 
             

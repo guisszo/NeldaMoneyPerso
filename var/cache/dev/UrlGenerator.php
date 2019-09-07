@@ -21,6 +21,7 @@ return [
     'selecProfile' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectProfile'], [], [['text', '/api/selecProfile']], [], []],
     'selectCompte' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::selectCompte'], [], [['text', '/api/selectCompte']], [], []],
     'findNinea' => [[], ['_controller' => 'App\\Controller\\SuperAdminController::findNinea'], [], [['text', '/api/findNinea']], [], []],
+    'onepart' => [['id'], ['id' => null, '_controller' => 'App\\Controller\\SuperAdminController::onepart'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/onepart']], [], []],
     'envoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::envoi'], [], [['text', '/api/envoi']], [], []],
     'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'findCode' => [[], ['_controller' => 'App\\Controller\\TransactionController::findCode'], [], [['text', '/api/findCode']], [], []],
