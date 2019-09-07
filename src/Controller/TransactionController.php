@@ -22,6 +22,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class TransactionController extends AbstractController
 {
+    private $status;
+    private $message;
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->status = 'status';
+        $this->message = 'message';
+    }
 
     #####################################################################################
     ########################### creation de la fonction d'envoi #########################
@@ -53,8 +60,8 @@ class TransactionController extends AbstractController
         $form->submit($values);
         if ($user->getCompte()->getSolde() < $form->get('montant')->getData()) {
             $data = [
-                'status' => 208,
-                'message' => 'Votre solde ne vous permet pas de faire d\'envoi'
+                $this->status => 208,
+                $this->message => 'Votre solde ne vous permet pas de faire d\'envoi'
             ];
 
             return new JsonResponse($data, 208);
@@ -134,10 +141,6 @@ class TransactionController extends AbstractController
         ############# comparaison du code avec celui généré #################
         $repo = $this->getDoctrine()->getRepository(Transaction::class);
         $codeGen = $repo->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
-
-        // if (!$codeGen) {
-        //     throw new NotFoundHttpException('ce code n\'existe pas ');
-        // }
        
         $codeGen->setUserRetrait($user);
         $codeGen->setRecevedAt(new \DateTime);
@@ -180,8 +183,8 @@ class TransactionController extends AbstractController
         $entityManager->flush();
 
         $data = [
-            'status' => 201,
-            'message' => 'Le retrait a ete fait '
+            $this->status => 201,
+            $this->message => 'Le retrait a ete fait '
         ];
 
         return new JsonResponse($data, 201);
@@ -213,17 +216,16 @@ class TransactionController extends AbstractController
            
             if (!$Code) {
                 $data = [
-                    'status' => 208,
-                    'message' => 'Ce code n\'existe pas '
+                    $this->status => 208,
+                    $this->message => 'Ce code n\'existe pas '
                 ];
         
                 return new JsonResponse($data, 208);
             }
-/*             var_dump($Code->getStatut());die();
- */            if ($Code->getStatut() === 'retire') {
+             if ($Code->getStatut() === 'retire') {
                 $data = [
-                    'status' => 209,
-                    'message' => 'Le retrait a deja été effectué  pour ce code'
+                    $this->status => 209,
+                    $this->message => 'Le retrait a deja été effectué  pour ce code'
                 ];
     
                 return new JsonResponse($data, 209);
