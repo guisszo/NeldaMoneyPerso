@@ -57,9 +57,7 @@ class UtilisateurRepository extends ServiceEntityRepository
     public function findUsers(Utilisateur $utilisateur)
     {
         return $this->createQueryBuilder('u')
-            /* ->andWhere('u.roles LIKE :roles')
-            ->setParameter('roles', '%"'."ROLE_USER".'"%')
-             */
+         
             ->andWhere('u != :val')
             ->andWhere('u.partenaire = :val2')
             ->setParameter('val', $utilisateur)

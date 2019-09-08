@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Compte;
 use App\Form\RetraitType;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
 use App\Repository\TarifsRepository;
-use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class TransactionController extends AbstractController
 {
     private $status;
     private $message;
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct()
     {
         $this->status = 'status';
         $this->message = 'message';
@@ -47,6 +48,8 @@ class TransactionController extends AbstractController
         $user = $this->getUser();
         $values = $request->request->all();
         ###############code qui va générer le code transaction############
+        
+
 
         $min = 1000;
         $max = 9999;
@@ -89,6 +92,15 @@ class TransactionController extends AbstractController
         $transaction->setCommissionEtat($value[0]->getValeur() * 0.3);
         $transaction->setCommissionNeldam($value[0]->getValeur() * 0.4);
 
+        $CompteSUp= new Compte();
+        $repo = $this->getDoctrine()->getRepository(Compte::class);
+        $superC = $repo->findOneBy(['solde' => $CompteSUp->getId()==1]);  
+        $soldeSuper=$superC->getSolde();
+       $superC->setSolde($soldeSuper + $transaction->getCommissionNeldam());
+         //var_dump($soldeSuper);die();
+
+
+
         $cpt = $user->getCompte(); ########### recupération du numero de compte
         $modsolde = $user->getCompte()->getSolde() -
             $transaction->getMontant() +
@@ -105,6 +117,7 @@ class TransactionController extends AbstractController
                 'Content-Type' => 'application/json'
             ]);
         }
+        $entityManager->persist($superC);
         $entityManager->persist($cpt);
         $entityManager->persist($transaction);
         $entityManager->flush();

@@ -19,6 +19,20 @@ class CompteRepository extends ServiceEntityRepository
         parent::__construct($registry, Compte::class);
     }
 
+
+ 
+    public function findSuperCompte()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.partenaire Is Null')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+    
+
+
+
     // /**
     //  * @return Compte[] Returns an array of Compte objects
     //  */
