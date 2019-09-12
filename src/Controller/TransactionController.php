@@ -48,7 +48,7 @@ class TransactionController extends AbstractController
         $user = $this->getUser();
         $values = $request->request->all();
         ###############code qui va générer le code transaction############
-        
+
 
 
         $min = 1000;
@@ -92,14 +92,13 @@ class TransactionController extends AbstractController
         $transaction->setCommissionEtat($value[0]->getValeur() * 0.3);
         $transaction->setCommissionNeldam($value[0]->getValeur() * 0.4);
 
-        $CompteSUp= new Compte();
+        ####### on met la commission Neldam sur le compte de neldam ici
+        $CompteSUp = new Compte();
         $repo = $this->getDoctrine()->getRepository(Compte::class);
-        $superC = $repo->findOneBy(['solde' => $CompteSUp->getId()==1]);  
-        $soldeSuper=$superC->getSolde();
-       $superC->setSolde($soldeSuper + $transaction->getCommissionNeldam());
-         //var_dump($soldeSuper);die();
-
-
+        $superC = $repo->findOneBy(['solde' => $CompteSUp->getId() == 1]);
+        $soldeSuper = $superC->getSolde();
+        $superC->setSolde($soldeSuper + $transaction->getCommissionNeldam());
+        #########" fin de cette etape
 
         $cpt = $user->getCompte(); ########### recupération du numero de compte
         $modsolde = $user->getCompte()->getSolde() -
@@ -154,7 +153,7 @@ class TransactionController extends AbstractController
         ############# comparaison du code avec celui généré #################
         $repo = $this->getDoctrine()->getRepository(Transaction::class);
         $codeGen = $repo->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
-       
+
         $codeGen->setUserRetrait($user);
         $codeGen->setRecevedAt(new \DateTime);
         $codeGen->setCNIrecepteur($values['CNIrecepteur']);
@@ -215,32 +214,32 @@ class TransactionController extends AbstractController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer
     ) {
-        $user=$this->getUser();
+        $user = $this->getUser();
         $data = $request->request->all();
 
         $transaction = new Transaction();
         $forme = $this->createForm(RetraitType::class, $transaction);
-        
+
         $forme->submit($data);
         if ($forme->isSubmitted()) {
             $entityManager = $this->getDoctrine()->getManager();
             $Code = $entityManager->getRepository(Transaction::class)
-            ->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
-           
+                ->findOneBy(['codeTransaction' => $transaction->getCodeTransaction()]);
+
             if (!$Code) {
                 $data = [
                     $this->status => 208,
                     $this->message => 'Ce code n\'existe pas '
                 ];
-        
+
                 return new JsonResponse($data, 208);
             }
-             if ($Code->getStatut() === 'retire') {
+            if ($Code->getStatut() === 'retire') {
                 $data = [
                     $this->status => 209,
                     $this->message => 'Le retrait a deja été effectué  pour ce code'
                 ];
-    
+
                 return new JsonResponse($data, 209);
             }
             $data = $serializer->serialize($Code, 'json', [
@@ -252,6 +251,5 @@ class TransactionController extends AbstractController
                 'Content-Type' => 'application/json'
             ]);
         }
-
     }
 }

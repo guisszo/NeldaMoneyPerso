@@ -55,7 +55,7 @@ class Transaction
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","CodeTransaction"})
      */
     private $codeTransaction;
 
