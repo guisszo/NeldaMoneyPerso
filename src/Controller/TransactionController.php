@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Osms\Osms;
 use App\Entity\Compte;
 use App\Form\RetraitType;
 use App\Entity\Transaction;
@@ -93,9 +93,8 @@ class TransactionController extends AbstractController
         $transaction->setCommissionNeldam($value[0]->getValeur() * 0.4);
 
         ####### on met la commission Neldam sur le compte de neldam ici
-        $CompteSUp = new Compte();
         $repo = $this->getDoctrine()->getRepository(Compte::class);
-        $superC = $repo->findOneBy(['solde' => $CompteSUp->getId() == 1]);
+        $superC = $repo->findOneBy(['id' =>  1]);
         $soldeSuper = $superC->getSolde();
         $superC->setSolde($soldeSuper + $transaction->getCommissionNeldam());
         #########" fin de cette etape
@@ -116,11 +115,35 @@ class TransactionController extends AbstractController
                 'Content-Type' => 'application/json'
             ]);
         }
+
         $entityManager->persist($superC);
         $entityManager->persist($cpt);
         $entityManager->persist($transaction);
         $entityManager->flush();
-
+        
+        $config = array();
+        
+        $osms = new Osms($config);
+        
+        // retrieve an access token
+        $response = $osms->getTokenFromConsumerKey();
+        
+        if (!empty($response['access_token'])) {
+            $senderAddress = 'tel:+221'.$form->get('telExpediteur')->getData();
+            $receiverAddress = 'tel:+221'.$form->get('telRecepteur')->getData();
+            $messag = 'Bonjour '.$form->get('nomcompletRecepteur')->getData().', vous avez recu '.$valeur
+            .' de la part de '.$form->get('nomcompletExpediteur')->getData()
+            .' tel:'.$form->get('telExpediteur')->getData()
+            .'. Le code de retrait est: '.$transaction->getCodeTransaction()
+            .'. Disponible dans tous les agences Neldam.'
+            ;
+            $senderName = 'send';
+        
+            $osms->sendSMS($senderAddress, $receiverAddress, $messag, $senderName);
+        } else {
+            // error
+        }
+        
         $data = $serializer->serialize($transaction, 'json', [
             'groups' => ['transactionEnv']
         ]);

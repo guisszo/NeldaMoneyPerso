@@ -103,6 +103,10 @@ class ComposerStaticInitef4439cbf6e7711ec80d393986aac216
             'PhpParser\\' => 10,
             'PackageVersions\\' => 16,
         ),
+        'O' => 
+        array (
+            'Osms\\' => 5,
+        ),
         'N' => 
         array (
             'Nelmio\\CorsBundle\\' => 18,
@@ -421,6 +425,10 @@ class ComposerStaticInitef4439cbf6e7711ec80d393986aac216
         'PackageVersions\\' => 
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
+        ),
+        'Osms\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ismaeltoe/osms/src',
         ),
         'Nelmio\\CorsBundle\\' => 
         array (
