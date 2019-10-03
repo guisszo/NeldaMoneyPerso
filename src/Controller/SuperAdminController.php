@@ -35,6 +35,9 @@ class SuperAdminController extends AbstractController
     private $bloquer;
     private $content_type;
     private $app_json;
+    private $listeUtil;
+    private $rolePartAdmin;
+    private $rolePart;
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
@@ -45,6 +48,9 @@ class SuperAdminController extends AbstractController
         $this->bloquer =  'bloque';
         $this->content_type = 'Content-Type';
         $this->app_json = 'application/json';
+        $this->listeUtil =  'listeutile';
+        $this->rolePartAdmin = "ROLE_PARTENAIRE_ADMIN";
+        $this->rolePart = "ROLE_PARTENAIRE";
     }
 
 
@@ -150,7 +156,7 @@ class SuperAdminController extends AbstractController
 
     /**
      * @Route("/registeruser", name="registeruser", methods={"POST"})
-     * IsGranted("ROLE_SUPER_ADMIN","ROLE_PARTENAIRE")
+     * IsGranted("ROLE_SUPER_ADMIN",$this->rolePart)
      */
     public function reguser(
         Request $request,
@@ -206,8 +212,8 @@ class SuperAdminController extends AbstractController
         } elseif ($profils->getLibelle() == "partenaire_admin") {
 
             if (
-                $this->getUser()->getRoles()[0] !== "ROLE_PARTENAIRE" &&
-                $this->getUser()->getRoles()[0] !== "ROLE_PARTENAIRE_ADMIN"
+                $this->getUser()->getRoles()[0] !== $this->rolePart &&
+                $this->getUser()->getRoles()[0] !== $this->rolePartAdmin
             ) {
 
                 $data = [
@@ -220,12 +226,12 @@ class SuperAdminController extends AbstractController
             $users = $this->getUser()->getPartenaire();
 
             $utilisateur->setPartenaire($users);
-            $utilisateur->setRoles(['ROLE_PARTENAIRE_ADMIN']);
+            $utilisateur->setRoles([$this->rolePartAdmin]);
         } elseif ($profils->getLibelle() == "user") {
 
             if (
-                $this->getUser()->getRoles()[0] != "ROLE_PARTENAIRE" &&
-                $this->getUser()->getRoles()[0] != "ROLE_PARTENAIRE_ADMIN"
+                $this->getUser()->getRoles()[0] != $this->rolePart &&
+                $this->getUser()->getRoles()[0] != $this->rolePartAdmin
             ) {
 
                 $data = [
@@ -437,7 +443,7 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($utilisateurs, 'json', [
-           $this->groups => ['listeutile']
+           $this->groups => [ $this->listeUtil]
         ]);
       
 
@@ -458,7 +464,7 @@ class SuperAdminController extends AbstractController
         $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findUsers($user);
             
         $data = $serializer->serialize($utilisateurs, 'json', [
-           $this->groups => ['listeutile']
+           $this->groups => [ $this->listeUtil]
         ]);
       
         return new Response($data, 200, [
@@ -481,7 +487,7 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($utilisateurs, 'json', [
-           $this->groups => ['listeutile']
+           $this->groups => [ $this->listeUtil]
         ]);
       
 
@@ -519,7 +525,7 @@ class SuperAdminController extends AbstractController
      SerializerInterface $serializer){
         $user=$this->getUser();
         
-        if($user->getRoles()[0]!="ROLE_PARTENAIRE" && $user->getRoles()[0]!="ROLE_PARTENAIRE_ADMIN"){
+        if($user->getRoles()[0]!=$this->rolePart && $user->getRoles()[0]!=$this->rolePartAdmin){
            
             $data = [
                 $this->statut => 403,
@@ -570,7 +576,7 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($partenair, 'json', [
-           $this->groups => ['listeutile']
+           $this->groups => [ $this->listeUtil]
         ]);
       
 
