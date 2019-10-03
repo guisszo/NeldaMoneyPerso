@@ -26,7 +26,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class SuperAdminController extends AbstractController
 {
-    
     private $encoder;
     private $statut;
     private $message;
@@ -38,6 +37,7 @@ class SuperAdminController extends AbstractController
     private $listeUtil;
     private $rolePartAdmin;
     private $rolePart;
+
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
