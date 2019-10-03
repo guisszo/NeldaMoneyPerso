@@ -29,10 +29,22 @@ class SuperAdminController extends AbstractController
     
     private $encoder;
     private $statut;
+    private $message;
+    private $constante;
+    private $groups;
+    private $bloquer;
+    private $content_type;
+    private $app_json;
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
         $this->statut ='statut';
+        $this->message = 'message';
+        $this->constante = 'actif';
+        $this->groups = 'groups';
+        $this->bloquer =  'bloque';
+        $this->content_type = 'Content-Type';
+        $this->app_json = 'application/json';
     }
 
 
@@ -48,7 +60,7 @@ class SuperAdminController extends AbstractController
         ValidatorInterface $validator,
         PartenaireRepository $repository
     ) {
-        $constante = 'actif';
+        
 
         $values = $request->request->all();
 
@@ -57,7 +69,7 @@ class SuperAdminController extends AbstractController
         $partenaire = new Partenaire();
         $form = $this->createForm(PartenaireType::class, $partenaire);
         $form->submit($values);
-        $partenaire->setStatut($constante);
+        $partenaire->setStatut($this->constante);
         $entityManager->persist($partenaire);
         $entityManager->flush();
 
@@ -103,7 +115,7 @@ class SuperAdminController extends AbstractController
                 $utilisateur->setRoles(['ROLE_PARTENAIRE']);
                 $utilisateur->setPartenaire($part); # Insertion de l'ID du Partenaire
                 $utilisateur->setCompte($cpt); # Insertion de l'ID du Compte
-                $utilisateur->setStatut($constante);
+                $utilisateur->setStatut( $this->constante);
                 $utilisateur->setImageFile($file);
                 $utilisateur->setcreatedAt(new \Datetime);
                 $utilisateur->setUpdatedAt(new \Datetime);
@@ -113,7 +125,7 @@ class SuperAdminController extends AbstractController
                 if (count($errors)) {
                     $errors = $serializer->serialize($errors, 'json');
                     return new Response($errors, 500, [
-                        'Content-Type' => 'application/json'
+                         $this->content_type => $this->app_json
                     ]);
                 }
                 $entityManager->persist($utilisateur);
@@ -125,7 +137,7 @@ class SuperAdminController extends AbstractController
 
                 $data = [
                     $this->statut => 201,
-                    'message' => 'Le partenaire a été créé'
+                    $this->message => 'Le partenaire a été créé'
                 ];
 
                 return new JsonResponse($data, 201);
@@ -147,7 +159,7 @@ class SuperAdminController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
-        $constante = 'actif';
+        
         $values = $request->request->all();
 
         $utilisateur = new Utilisateur();
@@ -169,7 +181,7 @@ class SuperAdminController extends AbstractController
 
                 $data = [
                     $this->statut => 403,
-                    'message' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    $this->message => 'acces refuse, vous etes pas autorise a faire cette action'
                 ];
 
                 return new JsonResponse($data, 403);
@@ -185,7 +197,7 @@ class SuperAdminController extends AbstractController
 
                 $data = [
                     $this->statut => 403,
-                    'message' => 'acces refuse, vous etes pas autorise a faire cette action'
+                    $this->message => 'acces refuse, vous etes pas autorise a faire cette action'
                 ];
 
                 return new JsonResponse($data, 403);
@@ -200,7 +212,7 @@ class SuperAdminController extends AbstractController
 
                 $data = [
                     $this->statut => 403,
-                    'message' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    $this->message => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
                 ];
 
                 return new JsonResponse($data, 403);
@@ -218,7 +230,7 @@ class SuperAdminController extends AbstractController
 
                 $data = [
                     $this->statut => 403,
-                    'message' => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
+                    $this->message => 'acces refuse, seul un partenrie ou un partenaire_admin peuvent effectuer cette action'
                 ];
 
                 return new JsonResponse($data, 403);
@@ -230,7 +242,7 @@ class SuperAdminController extends AbstractController
         }
 
 
-        $utilisateur->setStatut($constante);
+        $utilisateur->setStatut( $this->constante);
         $utilisateur->setImageFile($file);
         $utilisateur->setcreatedAt(new \Datetime);
         $utilisateur->setUpdatedAt(new \Datetime);
@@ -242,7 +254,7 @@ class SuperAdminController extends AbstractController
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, [
-                'Content-Type' => 'application/json'
+                 $this->content_type => $this->app_json
             ]);
         }
 
@@ -253,7 +265,7 @@ class SuperAdminController extends AbstractController
 
         $data = [
             $this->statut => 201,
-            'message' => 'L\'utilisateur a été créé'
+            $this->message => 'L\'utilisateur a été créé'
         ];
 
         return new JsonResponse($data, 201);
@@ -268,7 +280,7 @@ class SuperAdminController extends AbstractController
      */
     public function update($id)
     {
-        $constante = 'actif';
+        
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
         $partStat = $utilisateur->getPartenaire()->getStatut();
@@ -283,18 +295,18 @@ class SuperAdminController extends AbstractController
         if ($partStat == "actif") {
 
 
-            $parts->setStatut('bloque');
-            $utilisateur->setStatut('bloque');
+            $parts->setStatut( $this->bloquer);
+            $utilisateur->setStatut( $this->bloquer);
         } else {
 
-            $parts->setStatut($constante);
-            $utilisateur->setStatut($constante);
+            $parts->setStatut( $this->constante);
+            $utilisateur->setStatut( $this->constante);
         }
         $entityManager->flush();
 
         $data = [
             $this->statut => 200,
-            'message' => 'Le statut a ete bien mis a jour'
+            $this->message => 'Le statut a ete bien mis a jour'
         ];
         return new JsonResponse($data);
     }
@@ -304,7 +316,7 @@ class SuperAdminController extends AbstractController
      */
     public function updatePartuser($id)
     {
-        $constante = 'actif';
+        
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($id);
        
@@ -312,17 +324,17 @@ class SuperAdminController extends AbstractController
         if ($utilisateur->getStatut() == "actif") {
 
 
-            $utilisateur->setStatut('bloque'); 
+            $utilisateur->setStatut( $this->bloquer); 
             
         } else {
 
-            $utilisateur->setStatut($constante);
+            $utilisateur->setStatut( $this->constante);
         }
         $entityManager->flush();
 
         $data = [
             $this->statut => 200,
-            'message' => 'Le statut a ete bien mis a jour'
+            $this->message => 'Le statut a ete bien mis a jour'
         ];
         return new JsonResponse($data);
     }
@@ -382,16 +394,16 @@ class SuperAdminController extends AbstractController
      */
     public function listePartblock(PartenaireRepository $parte,SerializerInterface $serializer){
         
-        $partenair = $parte->findBy(['statut'=>'bloque']);
+        $partenair = $parte->findBy(['statut'=> $this->bloquer]);
           
 
         $data = $serializer->serialize($partenair, 'json', [
-            'groups' => ['liste']
+           $this->groups => ['liste']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
     }
      /**
@@ -404,12 +416,12 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($partenair, 'json', [
-            'groups' => ['liste']
+           $this->groups => ['liste']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
     }
 
@@ -425,12 +437,12 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($utilisateurs, 'json', [
-            'groups' => ['listeutile']
+           $this->groups => ['listeutile']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
             
         ]);
     }
@@ -446,11 +458,11 @@ class SuperAdminController extends AbstractController
         $utilisateurs = $entityManager->getRepository(Utilisateur::class)->findUsers($user);
             
         $data = $serializer->serialize($utilisateurs, 'json', [
-            'groups' => ['listeutile']
+           $this->groups => ['listeutile']
         ]);
       
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
             
         ]);
  
@@ -469,12 +481,12 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($utilisateurs, 'json', [
-            'groups' => ['listeutile']
+           $this->groups => ['listeutile']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
             
         ]);
     }
@@ -489,12 +501,12 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($profiles, 'json', [
-            'groups' => ['listeProfile']
+           $this->groups => ['listeProfile']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
     }
 
@@ -511,7 +523,7 @@ class SuperAdminController extends AbstractController
            
             $data = [
                 $this->statut => 403,
-                'mes' => ' vous avez pas acces a ce contenu ' . $user->getNomcomplet()
+                $this->message => ' vous avez pas acces a ce contenu ' . $user->getNomcomplet()
             ];
             return new JsonResponse($data);
         }
@@ -520,12 +532,12 @@ class SuperAdminController extends AbstractController
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($user);
         $cpt = $utilisateur->getPartenaire()->getComptes();
         $data = $serializer->serialize($cpt, 'json', [
-            'groups' => ['selectCompte']
+           $this->groups => ['selectCompte']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
      } 
      
@@ -539,12 +551,12 @@ class SuperAdminController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(Partenaire::class);
         $part = $repo->findOneBy(['ninea' => $values->ninea]);
         $data = $serializer->serialize($part, 'json', [
-            'groups' => ['mkCptList']
+           $this->groups => ['mkCptList']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
      }
 
@@ -558,12 +570,12 @@ class SuperAdminController extends AbstractController
           
 
         $data = $serializer->serialize($partenair, 'json', [
-            'groups' => ['listeutile']
+           $this->groups => ['listeutile']
         ]);
       
 
         return new Response($data, 200, [
-            'Content-Type' => 'application/json'
+             $this->content_type => $this->app_json
         ]);
     }
 
