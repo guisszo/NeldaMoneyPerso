@@ -31,8 +31,7 @@ class UtilisateurControllerFormType extends AbstractType
             ])
             ->add('profil',EntityType::class,['class' =>Profil::class])
             ->add('imageFile',VichImageType::class)
-            
-        ;
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
