@@ -207,9 +207,9 @@ class UtilisateurController extends AbstractController
         if ($forme->isSubmitted()) {
             $entityManager = $this->getDoctrine()->getManager();
             $numcompte = $entityManager->getRepository(Compte::class)->findOneBy(['numcompte' => $compte->getNumcompte()]);
-            if(!$numcompte){
+             if(!$numcompte){
                 $data = [
-                    $this->status => 207,
+                    $this->status => 208,
                     $this->message => 'Ce numero de compte n\'existe pas!'
                 ];
                 return new JsonResponse($data,207);

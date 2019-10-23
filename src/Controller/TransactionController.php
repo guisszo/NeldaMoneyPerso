@@ -3,6 +3,7 @@
 namespace App\Controller;
 use Osms\Osms;
 use App\Entity\Compte;
+use App\Entity\Tarifs;
 use App\Form\RetraitType;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
@@ -273,6 +274,35 @@ class TransactionController extends AbstractController
             return new Response($data, 200, [
                 'Content-Type' => 'application/json'
             ]);
+        }
+    }
+
+     /**
+     * @Route("/Trouvertarif", name="Trouvertarif", methods={"POST"})
+     */
+    public function trouverTarif(TarifsRepository $repo,
+    Request $request,
+    SerializerInterface $serializer
+    )
+    {
+        $data = $request->request->all();
+
+        $transaction = new Transaction();
+        $forme = $this->createForm(TransactionType::class, $transaction);
+
+        $forme->submit($data);
+        if ($forme->isSubmitted()) {
+           
+            $valeur = $repo->findtarif($forme->get('montant')->getData());
+
+            
+            $data = $serializer->serialize($valeur, 'json', [
+                'groups' => ['getvaleur']
+            ]);
+            return new Response($data, 200, [
+                'Content-Type' => 'application/json'
+            ]);
+            
         }
     }
 }

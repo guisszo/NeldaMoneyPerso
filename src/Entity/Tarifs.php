@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TarifsRepository")
@@ -28,6 +29,7 @@ class Tarifs
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("getvaleur")
      */
     private $valeur;
 
