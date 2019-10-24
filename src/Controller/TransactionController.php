@@ -29,6 +29,8 @@ class TransactionController extends AbstractController
     private $groups;
     private $content_type;
     private $app_json;
+    private $dateFrom;
+    private $dateTo;
     public function __construct()
     {
         $this->groups = 'groups';
@@ -36,6 +38,8 @@ class TransactionController extends AbstractController
         $this->message = 'message';
         $this->content_type = 'Content-Type';
         $this->app_json = 'application/json';
+        $this->dateFrom = 'dateFrom';
+        $this->dateTo = 'dateTo';
     }
 
     #####################################################################################
@@ -355,4 +359,33 @@ class TransactionController extends AbstractController
  
 
     }
+
+    /**
+     * @Route("/RechercheDateEnv", name="RechercheEnvoi", methods={"GET"})
+     * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
+     */
+
+     public function RechercheEnv(SerializerInterface $serializer,
+     Request $request,TransactionRepository $repo){
+       
+        $user = $this->getUser();
+        $values = json_decode($request->getContent());
+        if (!$values) {
+            $values = $request->request->all();
+        }
+        
+        $de = new \DateTime($values->dateFrom);
+        $de_format=$de->format('Y-m-d')."00-00-00";
+        $a = new \DateTime($values->dateTo);
+        $a_format =$a->format('Y-m-d')."23-59-59";
+        $utilisateurs = $repo->RechercheDateE($de_format,$a_format,$user);
+        $data = $serializer->serialize($utilisateurs, 'json', [
+           $this->groups => ['envlistTransact']
+        ]);
+       
+        return new Response($data, 200, [
+             $this->content_type => $this->app_json
+            
+        ]);
+     }
 }
