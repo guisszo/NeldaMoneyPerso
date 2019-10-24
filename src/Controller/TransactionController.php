@@ -26,10 +26,16 @@ class TransactionController extends AbstractController
 {
     private $status;
     private $message;
+    private $groups;
+    private $content_type;
+    private $app_json;
     public function __construct()
     {
+        $this->groups = 'groups';
         $this->status = 'status';
         $this->message = 'message';
+        $this->content_type = 'Content-Type';
+        $this->app_json = 'application/json';
     }
 
     #####################################################################################
@@ -113,7 +119,7 @@ class TransactionController extends AbstractController
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, [
-                'Content-Type' => 'application/json'
+                $this->content_type => $this->app_json
             ]);
         }
 
@@ -146,11 +152,11 @@ class TransactionController extends AbstractController
         }
         
         $data = $serializer->serialize($transaction, 'json', [
-            'groups' => ['transactionEnv']
+            $this->groups => ['transactionEnv']
         ]);
 
         return new Response($data, 201, [
-            'Content-Type' => 'application/json'
+            $this->content_type => $this->app_json
         ]);
     }
     #####################################################################################
@@ -211,7 +217,7 @@ class TransactionController extends AbstractController
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, [
-                'Content-Type' => 'application/json'
+                $this->content_type => $this->app_json
             ]);
         }
         $entityManager->persist($cpt);
@@ -268,11 +274,11 @@ class TransactionController extends AbstractController
             }
             $data = $serializer->serialize($Code, 'json', [
                 'userRetrait' =>  $Code->setUserRetrait($user),
-                'groups' => ['CodeTransaction']
+                $this->groups => ['CodeTransaction']
             ]);
 
             return new Response($data, 200, [
-                'Content-Type' => 'application/json'
+                $this->content_type => $this->app_json
             ]);
         }
     }
@@ -293,16 +299,60 @@ class TransactionController extends AbstractController
         $forme->submit($data);
         if ($forme->isSubmitted()) {
            
-            $valeur = $repo->findtarif($forme->get('montant')->getData());
+            $valeur = $repo-221>findtarif($forme->get('montant')->getData());
 
             
             $data = $serializer->serialize($valeur, 'json', [
                 'groups' => ['getvaleur']
             ]);
             return new Response($data, 200, [
-                'Content-Type' => 'application/json'
+                $this->content_type => $this->app_json
             ]);
             
         }
+    }
+
+        /**
+     * @Route("/listeTransactionsEnv", name="Transactionsenv", methods={"GET"})
+     * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
+     */
+    public function TransactListEnv(EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $utilisateurs = $entityManager->getRepository(Transaction::class)->findTransactionsEnvoi($user);
+        $data = $serializer->serialize($utilisateurs, 'json', [
+           $this->groups => ['envlistTransact']
+        ]);
+      
+        return new Response($data, 200, [
+             $this->content_type => $this->app_json
+            
+        ]);
+ 
+
+    }
+
+    /**
+     * @Route("/listeTransactionsRetrait", name="Transactionsretrait", methods={"GET"})
+     * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
+     */
+    public function TransactListRetrait(EntityManagerInterface $entityManager,
+    SerializerInterface $serializer){
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $utilisateurs = $entityManager->getRepository(Transaction::class)->findTransactionsretrait($user);
+        $data = $serializer->serialize($utilisateurs, 'json', [
+           $this->groups => ['retraitlistTransact']
+        ]);
+      
+        return new Response($data, 200, [
+             $this->content_type => $this->app_json
+            
+        ]);
+ 
+
     }
 }

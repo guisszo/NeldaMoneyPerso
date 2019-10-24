@@ -32,7 +32,7 @@ class SuperAdminController extends AbstractController
     private $constante;
     private $groups;
     private $bloquer;
-    private $content_type;
+private $content_type;
     private $app_json;
     private $listeUtil;
     private $rolePartAdmin;

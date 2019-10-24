@@ -26,6 +26,8 @@ return [
     'retrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::retrait'], [], [['text', '/api/retrait']], [], []],
     'findCode' => [[], ['_controller' => 'App\\Controller\\TransactionController::findCode'], [], [['text', '/api/findCode']], [], []],
     'Trouvertarif' => [[], ['_controller' => 'App\\Controller\\TransactionController::trouverTarif'], [], [['text', '/api/Trouvertarif']], [], []],
+    'Transactionsenv' => [[], ['_controller' => 'App\\Controller\\TransactionController::TransactListEnv'], [], [['text', '/api/listeTransactionsEnv']], [], []],
+    'Transactionsretrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::TransactListRetrait'], [], [['text', '/api/listeTransactionsRetrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::token'], [], [['text', '/api/login']], [], []],
     'add_depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::Depot'], [], [['text', '/api/depot']], [], []],

@@ -61,7 +61,7 @@ class Transaction
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv","CodeTransaction","envlistTransact","retraitlistTransact"})
      */
     private $montant;
 
@@ -78,21 +78,25 @@ class Transaction
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("envlistTransact")
      */
     private $SentAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups("retraitlistTransact")
      */
     private $recevedAt;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("envlistTransact")
      */
     private $commissionEnv;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("retraitlistTransact")
      */
     private $commissionRetrait;
 

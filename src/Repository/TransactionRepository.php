@@ -34,15 +34,27 @@ class TransactionRepository extends ServiceEntityRepository
     // }
  
 
-    /*
-    public function findOneBySomeField($value): ?Transaction
+ 
+    public function findTransactionsEnvoi($value)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
+            ->andWhere('t.userEnvoi = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
+    public function findTransactionsRetrait($value)
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.userRetrait = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+
+    
 }
