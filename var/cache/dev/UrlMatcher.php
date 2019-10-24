@@ -30,6 +30,7 @@ return [
         '/api/listeTransactionsEnv' => [[['_route' => 'Transactionsenv', '_controller' => 'App\\Controller\\TransactionController::TransactListEnv'], null, ['GET' => 0], null, false, false, null]],
         '/api/listeTransactionsRetrait' => [[['_route' => 'Transactionsretrait', '_controller' => 'App\\Controller\\TransactionController::TransactListRetrait'], null, ['GET' => 0], null, false, false, null]],
         '/api/RechercheDateEnv' => [[['_route' => 'RechercheEnvoi', '_controller' => 'App\\Controller\\TransactionController::RechercheEnv'], null, ['GET' => 0], null, false, false, null]],
+        '/api/RechercheDateRetrait' => [[['_route' => 'RechercheRetrait', '_controller' => 'App\\Controller\\TransactionController::RechercheRetrait'], null, ['GET' => 0], null, false, false, null]],
         '/user' => [[['_route' => 'user', '_controller' => 'App\\Controller\\UserController::index'], null, null, null, false, false, null]],
         '/api/login' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UtilisateurController::token'], null, ['POST' => 0], null, false, false, null]],
         '/api/depot' => [[['_route' => 'add_depot', '_controller' => 'App\\Controller\\UtilisateurController::Depot'], null, ['POST' => 0], null, false, false, null]],

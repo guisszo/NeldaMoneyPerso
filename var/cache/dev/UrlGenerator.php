@@ -29,6 +29,7 @@ return [
     'Transactionsenv' => [[], ['_controller' => 'App\\Controller\\TransactionController::TransactListEnv'], [], [['text', '/api/listeTransactionsEnv']], [], []],
     'Transactionsretrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::TransactListRetrait'], [], [['text', '/api/listeTransactionsRetrait']], [], []],
     'RechercheEnvoi' => [[], ['_controller' => 'App\\Controller\\TransactionController::RechercheEnv'], [], [['text', '/api/RechercheDateEnv']], [], []],
+    'RechercheRetrait' => [[], ['_controller' => 'App\\Controller\\TransactionController::RechercheRetrait'], [], [['text', '/api/RechercheDateRetrait']], [], []],
     'user' => [[], ['_controller' => 'App\\Controller\\UserController::index'], [], [['text', '/user']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::token'], [], [['text', '/api/login']], [], []],
     'add_depot' => [[], ['_controller' => 'App\\Controller\\UtilisateurController::Depot'], [], [['text', '/api/depot']], [], []],

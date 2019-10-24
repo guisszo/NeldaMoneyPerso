@@ -388,4 +388,33 @@ class TransactionController extends AbstractController
             
         ]);
      }
+
+     /**
+     * @Route("/RechercheDateRetrait", name="RechercheRetrait", methods={"GET"})
+     * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
+     */
+
+    public function RechercheRetrait(SerializerInterface $serializer,
+    Request $request,TransactionRepository $repo){
+      
+       $user = $this->getUser();
+       $values = json_decode($request->getContent());
+       if (!$values) {
+           $values = $request->request->all();
+       }
+       
+       $de = new \DateTime($values->dateFrom);
+       $de_format=$de->format('Y-m-d')."00-00-00";
+       $a = new \DateTime($values->dateTo);
+       $a_format =$a->format('Y-m-d')."23-59-59";
+       $utilisateurs = $repo->RechercheDateR($de_format,$a_format,$user);
+       $data = $serializer->serialize($utilisateurs, 'json', [
+          $this->groups => ['retraitlistTransact']
+       ]);
+      
+       return new Response($data, 200, [
+            $this->content_type => $this->app_json
+           
+       ]);
+    }
 }
