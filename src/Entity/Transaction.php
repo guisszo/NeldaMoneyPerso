@@ -31,25 +31,25 @@ class Transaction
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv","CodeTransaction","envlistTransact","retraitlistTransact"})
      */
     private $nomcompletExpediteur;
 
     /**
      * @ORM\Column(type="string", length=15)
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv","CodeTransaction","envlistTransact","retraitlistTransact"})
      */
     private $telExpediteur;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups({"transactionEnv","CodeTransaction"})
+     * @Groups({"transactionEnv","CodeTransaction","envlistTransact","retraitlistTransact"})
      */
     private $nomcompletRecepteur;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"transactionEnv"})
+     * @Groups({"transactionEnv","envlistTransact","retraitlistTransact"})
      */
     private $telRecepteur;
 
