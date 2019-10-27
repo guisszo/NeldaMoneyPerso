@@ -82,6 +82,7 @@ public function RechercheDateR($debut,$fin,$user){
     $qb = $this->createQueryBuilder('t');
     
     $qb
+    // ->andWhere('t.recevedAt BETWEEN :de AND :a')
     ->andWhere('t.recevedAt >= :de')
     ->andWhere('t.recevedAt <= :a')
     ->andWhere('t.userRetrait =:val')
