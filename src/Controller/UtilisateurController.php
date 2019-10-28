@@ -61,7 +61,7 @@ class UtilisateurController extends AbstractController
 
             $data = [
                 $this->status => 208,
-                'message' => 'cette utilisateur n existe pas'
+                $this->message => 'cette utilisateur n existe pas'
             ];
             return new JsonResponse($data,208);
         }
@@ -225,4 +225,5 @@ class UtilisateurController extends AbstractController
             ]);
         }
     }
+    
 }
