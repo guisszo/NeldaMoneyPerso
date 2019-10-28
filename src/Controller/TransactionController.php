@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -38,8 +39,8 @@ class TransactionController extends AbstractController
         $this->message = 'message';
         $this->content_type = 'Content-Type';
         $this->app_json = 'application/json';
-        $this->dateFrom = 'dateFrom';
-        $this->dateTo = 'dateTo';
+        $this->dateFrom = 'debut';
+        $this->dateTo = 'fin';
     }
 
     #####################################################################################
@@ -361,7 +362,7 @@ class TransactionController extends AbstractController
     }
 
     /**
-     * @Route("/RechercheDateEnv", name="RechercheEnvoi", methods={"GET"})
+     * @Route("/RechercheDateEnv", name="RechercheEnvoi", methods={"GET","POST"})
      * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
      */
 
@@ -369,17 +370,27 @@ class TransactionController extends AbstractController
      Request $request,TransactionRepository $repo){
        
         $user = $this->getUser();
-        $values = json_decode($request->getContent());
+        $values = json_decode($request->getContent(),true);
         if (!$values) {
             $values = $request->request->all();
         }
         
-        $de = new \DateTime($values->dateFrom);
+        $de = new \DateTime($values[$this->dateFrom]);
         $de_format=$de->format('Y-m-d')."00-00-00";
-        $a = new \DateTime($values->dateTo);
+        $a = new \DateTime($values[$this->dateTo]);
         $a_format =$a->format('Y-m-d')."23-59-59";
-        $utilisateurs = $repo->RechercheDateE($de_format,$a_format,$user);
-        $data = $serializer->serialize($utilisateurs, 'json', [
+        $rechercheDate = $repo->RechercheDateE($de_format,$a_format,$user);
+        
+        
+        if($rechercheDate==[]){
+            $data = [
+                $this->status => 404,
+                $this->message => 'Il n y a pas de transactions pour ces dates'
+            ];
+            return new JsonResponse($data,404);
+        }
+        
+        $data = $serializer->serialize($rechercheDate, 'json', [
            $this->groups => ['envlistTransact']
         ]);
        
@@ -390,7 +401,7 @@ class TransactionController extends AbstractController
      }
 
      /**
-     * @Route("/RechercheDateRetrait", name="RechercheRetrait", methods={"GET"})
+     * @Route("/RechercheDateRetrait", name="RechercheRetrait", methods={"GET","POST"})
      * IsGranted("ROLE_PARTENAIRE","ROLE_PARTENAIRE_ADMIN","ROLE_USER")
      */
 
@@ -398,17 +409,25 @@ class TransactionController extends AbstractController
     Request $request,TransactionRepository $repo){
       
        $user = $this->getUser();
-       $values = json_decode($request->getContent());
+       $values = json_decode($request->getContent(),true);
        if (!$values) {
            $values = $request->request->all();
        }
        
-       $de = new \DateTime($values->dateFrom);
+       $de = new \DateTime($values[$this->dateFrom]);
        $de_format=$de->format('Y-m-d')."00-00-00";
-       $a = new \DateTime($values->dateTo);
+       $a = new \DateTime($values[$this->dateTo]);
        $a_format =$a->format('Y-m-d')."23-59-59";
-       $utilisateurs = $repo->RechercheDateR($de_format,$a_format,$user);
-       $data = $serializer->serialize($utilisateurs, 'json', [
+       $rechercheDate = $repo->RechercheDateR($de_format,$a_format,$user);
+
+       if($rechercheDate==[]){
+            $data = [
+                $this->status => 404,
+                $this->message => 'Il n y a pas de transactions pour ces dates'
+            ];
+            return new JsonResponse($data,404);
+        }
+       $data = $serializer->serialize($rechercheDate, 'json', [
           $this->groups => ['retraitlistTransact']
        ]);
       
