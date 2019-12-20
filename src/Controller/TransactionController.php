@@ -304,7 +304,7 @@ class TransactionController extends AbstractController
         $forme->submit($data);
         if ($forme->isSubmitted()) {
            
-            $valeur = $repo-221>findtarif($forme->get('montant')->getData());
+            $valeur = $repo->findtarif($forme->get('montant')->getData());
 
             
             $data = $serializer->serialize($valeur, 'json', [
